@@ -1,21 +1,31 @@
 package com.asgow.ciel.examples.mapreduce.common;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
-import com.asgow.ciel.examples.mapreduce.wordcount.WordCountMap;
-import com.asgow.ciel.examples.mapreduce.wordcount.WordCountReduce;
+import com.asgow.ciel.tasks.ConstantNumOutputsTask;
+import com.asgow.ciel.tasks.FirstClassJavaTask;
 
 public class MapReduce {
 	
-	public Reference[][] map(Reference mapInputs[], int numMaps, int numReduces) throws IOException {
+	public Reference[][] map(String mapClassName, Reference mapInputs[], int numMaps, int numReduces) throws IOException, ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		// get map class object using reflection
+		Class mapClass = Class.forName(mapClassName);
+		Class[] parmTypes = {Reference.class, int.class};
+		Constructor mapConstructor = mapClass.getConstructor(parmTypes);
+		Object[] parms = new Object[2];
+		parms[1] = numReduces;
+		
 		// create references for map task output
         Reference[][] mapResults = new Reference[numMaps][numReduces];
 		
         // spawn map tasks
 		for (int i = 0; i < numMaps; ++i) {
-			mapResults[i] = Ciel.spawn(new WordCountMap(mapInputs[i], numReduces));
+			parms[0] = mapInputs[i];
+			mapResults[i] = Ciel.spawn((ConstantNumOutputsTask) mapConstructor.newInstance(parms));
 		}		
 		return mapResults;
 	}
@@ -30,10 +40,17 @@ public class MapReduce {
 		return outputs;
 	}
 		
-	public void reduce(Reference[][] reduceInput, int numReduces) throws IOException {
+	public void reduce(String reduceClassName, Reference[][] reduceInput, int numReduces) throws IOException, SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+		// get reduce class object using reflection
+		Class reduceClass = Class.forName(reduceClassName);
+		Class[] parmTypes = {Reference.class};
+		Constructor reduceConstructor = reduceClass.getConstructor(parmTypes);
+		Object[] parms = new Object[1];
+				
 		// spawn reduce tasks
 		for (int i = 0; i < numReduces; ++i) {
-			Ciel.tailSpawn(new WordCountReduce(reduceInput[i]));
+			parms[0] = reduceInput[i];
+			Ciel.tailSpawn((FirstClassJavaTask) reduceConstructor.newInstance(parms));
 		}
 	}
 }
