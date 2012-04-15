@@ -1,8 +1,11 @@
 package com.ciel.mapreduce.wordcount;
 
+import java.io.IOException;
+
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.FirstClassJavaTask;
+import com.ciel.mapreduce.common.MapReduce;
 
 public class WordCount implements FirstClassJavaTask {
 
@@ -21,22 +24,16 @@ public class WordCount implements FirstClassJavaTask {
         for (int i = 0; i < numMaps; ++i) {
         	mapInputs[i] = Ciel.RPC.packageLookup("input" + Integer.toString(i));
 		}
-
-        // create references for map task output
-        Reference[][] mapResults = new Reference[numMaps][numReduces];
-		
-        // spawn map tasks
-		for (int i = 0; i < numMaps; ++i) {
-			mapResults[i] = Ciel.spawn(new WordCountMap(mapInputs[i], numReduces));
-		}
-		
+        
+        MapReduce mapReduce = new MapReduce();
+        
+        // create maps
+        Reference[][] mapResults = map(mapInputs, numMaps, numReduces);
+        
 		// now shuffle map outputs so that each reduce task receives an input file from each map
-		Reference[][] reduceInput = shuffle(mapResults, numMaps, numReduces);
+		Reference[][] reduceInput = mapReduce.shuffle(mapResults, numMaps, numReduces);
 		
-		// spawn reduce tasks
-		for (int i = 0; i < numReduces; ++i) {
-			Ciel.tailSpawn(new WordCountReduce(reduceInput[i]));
-		}
+		reduce(reduceInput, numReduces);
 	}
 
 	public void setup() {
@@ -47,14 +44,22 @@ public class WordCount implements FirstClassJavaTask {
 		return new Reference[0];
 	}
 	
-	public Reference[][] shuffle(Reference[][] inputs, int numMaps, int numReduces) {
-		Reference[][] outputs = new Reference[numReduces][numMaps];
-		for(int i = 0; i < numReduces; ++i) {
-			for (int j = 0; j < numMaps; ++j) {
-				outputs[i][j] = inputs[j][i];
-			}
+	public Reference[][] map(Reference mapInputs[], int numMaps, int numReduces) throws IOException {
+		// create references for map task output
+        Reference[][] mapResults = new Reference[numMaps][numReduces];
+		
+        // spawn map tasks
+		for (int i = 0; i < numMaps; ++i) {
+			mapResults[i] = Ciel.spawn(new WordCountMap(mapInputs[i], numReduces));
+		}		
+		return mapResults;
+	}
+	
+	public void reduce(Reference[][] reduceInput, int numReduces) throws IOException {
+		// spawn reduce tasks
+		for (int i = 0; i < numReduces; ++i) {
+			Ciel.tailSpawn(new WordCountReduce(reduceInput[i]));
 		}
-		return outputs;
 	}
 
 }
