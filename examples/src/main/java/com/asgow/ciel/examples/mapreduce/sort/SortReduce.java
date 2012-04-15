@@ -93,6 +93,7 @@ public class SortReduce implements ConstantNumOutputsTask {
 		}
 
         System.out.println("SortReduce finished");		
+		Ciel.returnPlainString("SortReduce finished!");
 	}
 
 	public void setup() {

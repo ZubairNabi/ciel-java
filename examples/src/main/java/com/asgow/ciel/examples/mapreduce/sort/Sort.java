@@ -31,7 +31,6 @@ public class Sort implements FirstClassJavaTask {
 		
 		mapReduce.reduce("com.asgow.ciel.examples.mapreduce.sort.SortReduce", reduceInput, numReduces);
 		
-		Ciel.returnPlainString("SortReduce job finished!");
 	}
 
 	public void setup() {
