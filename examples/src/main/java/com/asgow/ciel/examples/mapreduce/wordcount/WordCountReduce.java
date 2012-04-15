@@ -2,7 +2,6 @@ package com.asgow.ciel.examples.mapreduce.wordcount;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
@@ -108,18 +107,6 @@ public class WordCountReduce implements ConstantNumOutputsTask {
 		}
 
         System.out.println("WordCountReduce finished");
-        
-        //TODO: Remove the display of output
-        int c;
-
-		ByteArrayOutputStream horizontalChunkBuffer = new ByteArrayOutputStream();
-        InputStream horizontalChunkInput = Ciel.RPC.getStreamForReference(resultReference.getCompletedRef());
-		while ((c = horizontalChunkInput.read()) != -1) {
-			horizontalChunkBuffer.write(c);
-		}
-		horizontalChunkInput.close();
-		String horizontalChunkArray = new String(horizontalChunkBuffer.toByteArray());
-		System.out.println(horizontalChunkArray);
 		Ciel.returnPlainString("WordCountReduce finished and wrote to file " + resultReference.getFilename());
 	}
 
