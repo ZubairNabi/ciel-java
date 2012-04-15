@@ -55,17 +55,15 @@ public class WordCountMap implements ConstantNumOutputsTask {
         DataOutputStream[] tempDos = new DataOutputStream[nReducers];
         		       
         for(int i = 0; i < nReducers; i++) {
+        	// create temp files and output streams
         	tempFiles[i] = File.createTempFile("reduce_" + Integer.toString(i) , ".tmp");
         	tempOutputs[i] = new FileOutputStream(tempFiles[i]);
-			tempDos[i] = new DataOutputStream(new BufferedOutputStream(outputs[i]));
-		}
-        
-        // get references for output files and covert to OutputStream
-        for(int i = 0; i < nReducers; i++) {
-        	resultReference[i] = Ciel.RPC.getOutputFilename(i);
+			tempDos[i] = new DataOutputStream(new BufferedOutputStream(tempOutputs[i]));
+			
+			// get references for output files and convert to OutputStream
+			resultReference[i] = Ciel.RPC.getOutputFilename(i);
         	outputs[i] = resultReference[i].open();
 		}
-        
 
         String line;
         try {
@@ -83,14 +81,16 @@ public class WordCountMap implements ConstantNumOutputsTask {
 			outMap.flushAll();
 			
 			// now sort the temp files with 50 Mb mem limit
-			
 			TextFileSorter sorter = new TextFileSorter(new SortConfig().withMaxMemoryUsage(50 * 1000 * 1000));
 			for(int i = 0; i < nReducers; i++) {
 				sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
 		        // delete temp files
-		        tempFiles[i].deleteOnExit();
+		        tempFiles[i].delete();
+		        // close output stream
+		        outputs[i].close();
 			}
 			
+			// close output streams
 			for (DataOutputStream d : tempDos) 
 				d.close();
 
