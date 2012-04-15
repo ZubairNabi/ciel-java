@@ -70,9 +70,7 @@ class PartialHashOutputCollector<K extends Writable, V extends Writable> impleme
 	
 	private void dump(int mapID) throws IOException {
 	    HashMap<K, V> map = maps.get(mapID);
-	    // Using TreeMap to ensure sorted keys
-	    Map<K, V> sortedMap = new TreeMap<K, V>(map);
-		Iterator<Map.Entry<K, V>> it = sortedMap.entrySet().iterator();
+		Iterator<Map.Entry<K, V>> it = map.entrySet().iterator();
 	    while (it.hasNext()) {
 	        Map.Entry<K, V> pairs = it.next();
 	        //System.out.println(pairs.getKey() + " = " + pairs.getValue());
