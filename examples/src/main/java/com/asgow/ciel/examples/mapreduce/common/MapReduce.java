@@ -11,6 +11,7 @@ import com.asgow.ciel.tasks.FirstClassJavaTask;
 
 public class MapReduce {
 	
+    //TODO: Right now each input is required separately, change to get one input file with links to all other input files
 	public Reference[] getReferencesFromPackage(int numInputs) {
 		Reference[] references = new Reference[numInputs]; 
 		for (int i = 0; i < numInputs; ++i) {
