@@ -100,7 +100,7 @@ public class SortMap implements ConstantNumOutputsTask {
 			System.exit(1);
 		}
 
-        System.out.println("WordCountMap finished at " + System.currentTimeMillis());
+        System.out.println("SortMap finished at " + System.currentTimeMillis());
 	}
 
 	public void setup() {
