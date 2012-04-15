@@ -12,7 +12,7 @@ import com.asgow.ciel.examples.mapreduce.common.Combiner;
 import com.asgow.ciel.examples.mapreduce.common.OutputCollector;
 import com.asgow.ciel.examples.mapreduce.common.Writable;
 
-class PartialHashOutputCollector<K extends Writable, V extends Writable> implements OutputCollector<K, V> {
+public class PartialHashOutputCollector<K extends Writable, V extends Writable> implements OutputCollector<K, V> {
 
 	ArrayList<HashMap<K, V>> maps;
 	int flushThresh;
