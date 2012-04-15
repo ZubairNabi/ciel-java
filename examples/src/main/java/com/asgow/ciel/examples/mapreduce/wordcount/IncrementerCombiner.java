@@ -1,5 +1,7 @@
 package com.asgow.ciel.examples.mapreduce.wordcount;
 
+import com.asgow.ciel.examples.mapreduce.common.Combiner;
+
 class IncrementerCombiner implements Combiner<IntWritable> {
 	
 	public IntWritable combine(IntWritable oldValue, IntWritable increment) {

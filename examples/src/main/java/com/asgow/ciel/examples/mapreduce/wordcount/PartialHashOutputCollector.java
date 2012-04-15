@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.asgow.ciel.examples.mapreduce.common.Combiner;
 import com.asgow.ciel.examples.mapreduce.common.OutputCollector;
 import com.asgow.ciel.examples.mapreduce.common.Writable;
 

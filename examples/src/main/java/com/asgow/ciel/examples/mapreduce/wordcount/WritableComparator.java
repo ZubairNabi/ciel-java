@@ -24,7 +24,7 @@ import java.util.*;
 
 import com.asgow.ciel.examples.mapreduce.wordcount.DataInputBuffer;
 import com.asgow.ciel.examples.mapreduce.wordcount.RawComparator;
-import com.asgow.ciel.examples.mapreduce.wordcount.ReflectionUtils;
+import com.asgow.ciel.examples.mapreduce.common.ReflectionUtils;
 import com.asgow.ciel.examples.mapreduce.wordcount.Writable;
 import com.asgow.ciel.examples.mapreduce.wordcount.WritableComparable;
 
