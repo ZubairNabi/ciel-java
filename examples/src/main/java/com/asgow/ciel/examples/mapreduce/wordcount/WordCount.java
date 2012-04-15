@@ -25,10 +25,11 @@ public class WordCount implements FirstClassJavaTask {
         	mapInputs[i] = Ciel.RPC.packageLookup("input" + Integer.toString(i));
 		}
         
+        // create MapReduce object
         MapReduce mapReduce = new MapReduce();
         
         // create maps
-        Reference[][] mapResults = map(mapInputs, numMaps, numReduces);
+        Reference[][] mapResults = mapReduce.map("com.asgow.ciel.examples.mapreduce.wordcount.WordCountMap", mapInputs, numMaps, numReduces);
         
 		// now shuffle map outputs so that each reduce task receives an input file from each map
 		Reference[][] reduceInput = mapReduce.shuffle(mapResults, numMaps, numReduces);
