@@ -2,7 +2,7 @@ package skywriting.examples.wordcount;
 
 import java.io.*;
 
-import skywriting.examples.terasort.Text;
+import skywriting.examples.common.Text;
 
 
 public class PrintHelper {

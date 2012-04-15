@@ -8,8 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import skywriting.examples.grep.OutputCollector;
-import skywriting.examples.terasort.Writable;
+import skywriting.examples.common.OutputCollector;
+import skywriting.examples.common.Writable;
 
 class PartialHashOutputCollector<K extends Writable, V extends Writable> implements OutputCollector<K, V> {
 

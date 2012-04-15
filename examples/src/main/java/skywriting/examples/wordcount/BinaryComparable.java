@@ -1,5 +1,5 @@
 package skywriting.examples.wordcount;
-import skywriting.examples.terasort.WritableComparator;
+import skywriting.examples.common.WritableComparator;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
