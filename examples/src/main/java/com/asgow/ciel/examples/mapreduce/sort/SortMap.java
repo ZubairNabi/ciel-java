@@ -12,7 +12,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.StringTokenizer;
 
-import com.asgow.ciel.examples.mapreduce.wordcount.*;
+import com.asgow.ciel.examples.mapreduce.wordcount.IntWritable;
+import com.asgow.ciel.examples.mapreduce.wordcount.Text;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.references.WritableReference;
@@ -67,16 +68,16 @@ public class SortMap implements ConstantNumOutputsTask {
 		}
 
         String line;
+        Text blank = new Text("");
         try {
-        	IncrementerCombiner comb = new IncrementerCombiner();
-			PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(tempDos, nReducers, 1000, comb);
+			PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(tempDos, nReducers, 1000);
 			while ((line = bufferedReader.readLine()) != null) { 
 				//System.out.println(line);
 				StringTokenizer itr = new StringTokenizer(line);
 				while (itr.hasMoreTokens()) {
 					Text word = new Text();
 					word.set(itr.nextToken());
-					outMap.collect(word, one);
+					outMap.collect(word, blank);
 				}
 			}
 			outMap.flushAll();

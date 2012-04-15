@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.asgow.ciel.examples.mapreduce.common.MergeFiles;
-import com.asgow.ciel.examples.mapreduce.wordcount.*;
+import com.asgow.ciel.examples.mapreduce.wordcount.IntWritable;
+import com.asgow.ciel.examples.mapreduce.wordcount.Text;
 
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
@@ -64,36 +65,19 @@ public class SortReduce implements ConstantNumOutputsTask {
         DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(tempFile)));
 
 		try {
-			IncrementerCombiner comb = new IncrementerCombiner();
-			PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(dos, 1, Integer.MAX_VALUE, comb);
+			PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, 1, Integer.MAX_VALUE);
 			Text word = new Text();
-			Text previousWord = new Text();
-			IntWritable value = new IntWritable();	
-			int sum = 0;	
-			
-			word.readFields(dis);
-			value.readFields(dis);
-			
-			previousWord = word;
-			sum = value.get();
+			Text value = new Text();	
 			
 			while (true) {								
 				try {
 					word.readFields(dis);
 					value.readFields(dis);
-					if(previousWord == word) {
-						sum += value.get();
-					} else {
-						System.out.println(previousWord + " = " + sum);
-						outMap.collect(previousWord, new IntWritable(sum));
-						previousWord = word;
-						sum = value.get();
-					}
+					System.out.println(word + " = " + value);
+					outMap.collect(word, value);
 				} catch (EOFException e) {
 					break;
-				} catch (RuntimeException e) {
-					
-				}
+				} 
 			}
 			
 			//flush all key, values to collector, close the data stream, and delete the temp file
