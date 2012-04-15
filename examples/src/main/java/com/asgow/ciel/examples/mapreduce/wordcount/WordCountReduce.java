@@ -66,24 +66,23 @@ public class WordCountReduce implements ConstantNumOutputsTask {
 		try {
 			IncrementerCombiner comb = new IncrementerCombiner();
 			PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(dos, 1, Integer.MAX_VALUE, comb);
+			Text word = new Text();
+			IntWritable value = new IntWritable();		
 			
-				while (true) {
-					Text word = new Text();
-					IntWritable value = new IntWritable();
-					try {
-						word.readFields(dis);
-						value.readFields(dis);
-					} catch (EOFException e) {
-						break;
-					}
-
-					System.out.println(word + " = " + value);
-					outMap.collect(word, value);
+			while (true) {								
+				try {
+					word.readFields(dis);
+					value.readFields(dis);
+				} catch (EOFException e) {
+					break;
 				}
-			outMap.flushAll();
-			for (DataOutputStream d : dos)
-				d.close();
+				System.out.println(word + " = " + value);
+				outMap.collect(word, value);
+			}
 			
+			//flush all key, values to collector, close the data stream, and delete the temp file
+			outMap.flushAll();
+			dos[0].close();			
 			tempFile.delete();
 			
 		} catch (IOException e) {
