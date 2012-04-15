@@ -11,11 +11,14 @@ import com.asgow.ciel.tasks.FirstClassJavaTask;
 
 public class MapReduce {
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Reference[][] map(String mapClassName, Reference mapInputs[], int numMaps, int numReduces) throws IOException, ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		// get map class object using reflection
 		Class mapClass = Class.forName(mapClassName);
-		Class[] parmTypes = {Reference.class, int.class};
-		Constructor mapConstructor = mapClass.getConstructor(parmTypes);
+		Constructor mapConstructor = mapClass.getConstructor(new Class[] {
+			Reference.class,
+			int.class
+		});
 		Object[] parms = new Object[2];
 		parms[1] = numReduces;
 		
@@ -40,11 +43,13 @@ public class MapReduce {
 		return outputs;
 	}
 		
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void reduce(String reduceClassName, Reference[][] reduceInput, int numReduces) throws IOException, SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		// get reduce class object using reflection
 		Class reduceClass = Class.forName(reduceClassName);
-		Class[] parmTypes = {Reference.class};
-		Constructor reduceConstructor = reduceClass.getConstructor(parmTypes);
+		Constructor reduceConstructor = reduceClass.getConstructor(new Class[] {
+			Reference[].class
+		});
 		Object[] parms = new Object[1];
 				
 		// spawn reduce tasks
