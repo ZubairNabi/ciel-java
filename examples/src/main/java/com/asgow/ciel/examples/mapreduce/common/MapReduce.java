@@ -11,6 +11,14 @@ import com.asgow.ciel.tasks.FirstClassJavaTask;
 
 public class MapReduce {
 	
+	public Reference[] getReferencesFromPackage(int numInputs) {
+		Reference[] references = new Reference[numInputs]; 
+		for (int i = 0; i < numInputs; ++i) {
+	        	references[i] = Ciel.RPC.packageLookup("input" + Integer.toString(i));
+		}
+		return references;
+	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Reference[][] map(String mapClassName, Reference mapInputs[], int numMaps, int numReduces) throws IOException, ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		// get map class object using reflection
