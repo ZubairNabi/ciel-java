@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.common;
+package com.asgow.ciel.examples.mapreduce.common;
 
 import java.io.File;
 import java.io.FileInputStream;

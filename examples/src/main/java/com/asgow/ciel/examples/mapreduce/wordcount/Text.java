@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.wordcount;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -33,11 +33,10 @@ import java.nio.charset.MalformedInputException;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 
-import com.ciel.mapreduce.wordcount.BinaryComparable;
-import com.ciel.mapreduce.wordcount.Writable;
-import com.ciel.mapreduce.wordcount.WritableComparable;
-import com.ciel.mapreduce.wordcount.WritableComparator;
-import com.ciel.mapreduce.wordcount.Text.Comparator;
+import com.asgow.ciel.examples.mapreduce.wordcount.BinaryComparable;
+import com.asgow.ciel.examples.mapreduce.wordcount.Writable;
+import com.asgow.ciel.examples.mapreduce.wordcount.WritableComparable;
+import com.asgow.ciel.examples.mapreduce.wordcount.WritableComparator;
 
 
 

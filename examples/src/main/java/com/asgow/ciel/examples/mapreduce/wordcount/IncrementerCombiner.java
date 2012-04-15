@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.wordcount;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 
 class IncrementerCombiner implements Combiner<IntWritable> {
 	

@@ -1,11 +1,11 @@
-package com.ciel.mapreduce.wordcount;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 
 import java.io.IOException;
 
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.FirstClassJavaTask;
-import com.ciel.mapreduce.common.MapReduce;
+import com.asgow.ciel.examples.mapreduce.common.MapReduce;
 
 public class WordCount implements FirstClassJavaTask {
 

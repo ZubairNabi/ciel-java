@@ -1,5 +1,5 @@
-package com.ciel.mapreduce.wordcount;
-import com.ciel.mapreduce.common.WritableComparator;
+package com.asgow.ciel.examples.mapreduce.wordcount;
+import com.asgow.ciel.examples.mapreduce.common.WritableComparator;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one

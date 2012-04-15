@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.wordcount;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,25 +17,19 @@ package com.ciel.mapreduce.wordcount;
  * limitations under the License.
  */
 
-import java.io.IOException;
 
+import java.util.Comparator;
 
 /**
- * Collects the <code>&lt;key, value&gt;</code> pairs output by {@link Mapper}s
- * and {@link Reducer}s.
- *  
- * <p><code>OutputCollector</code> is the generalization of the facility 
- * provided by the Map-Reduce framework to collect data output by either the 
- * <code>Mapper</code> or the <code>Reducer</code> i.e. intermediate outputs 
- * or the output of the job.</p>  
+ * <p>
+ * A {@link Comparator} that operates directly on byte representations of
+ * objects.
+ * </p>
+ * @param <T>
+ * @see DeserializerComparator
  */
-public interface OutputCollector<K, V> {
-  
-  /** Adds a key/value pair to the output.
-   *
-   * @param key the key to collect.
-   * @param value to value to collect.
-   * @throws IOException
-   */
-  void collect(K key, V value) throws IOException;
+public interface RawComparator<T> extends Comparator<T> {
+
+  public int compare(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2);
+
 }

@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.wordcount;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -15,7 +15,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ciel.mapreduce.common.MergeFiles;
+import com.asgow.ciel.examples.mapreduce.common.MergeFiles;
 
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;

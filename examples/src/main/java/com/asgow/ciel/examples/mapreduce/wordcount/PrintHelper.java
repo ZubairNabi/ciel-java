@@ -1,8 +1,8 @@
-package com.ciel.mapreduce.wordcount;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 
 import java.io.*;
 
-import com.ciel.mapreduce.common.Text;
+import com.asgow.ciel.examples.mapreduce.common.Text;
 
 
 public class PrintHelper {

@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.common;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,14 +18,15 @@ package com.ciel.mapreduce.common;
  */
 
 
+
 import java.io.*;
 import java.util.*;
 
-import com.ciel.mapreduce.wordcount.DataInputBuffer;
-import com.ciel.mapreduce.wordcount.RawComparator;
-import com.ciel.mapreduce.wordcount.ReflectionUtils;
-import com.ciel.mapreduce.wordcount.Writable;
-import com.ciel.mapreduce.wordcount.WritableComparable;
+import com.asgow.ciel.examples.mapreduce.wordcount.DataInputBuffer;
+import com.asgow.ciel.examples.mapreduce.wordcount.RawComparator;
+import com.asgow.ciel.examples.mapreduce.wordcount.ReflectionUtils;
+import com.asgow.ciel.examples.mapreduce.wordcount.Writable;
+import com.asgow.ciel.examples.mapreduce.wordcount.WritableComparable;
 
 //import org.apache.hadoop.util.ReflectionUtils;
 

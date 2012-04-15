@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.wordcount;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,8 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.ciel.mapreduce.common.OutputCollector;
-import com.ciel.mapreduce.common.Writable;
+import com.asgow.ciel.examples.mapreduce.common.OutputCollector;
+import com.asgow.ciel.examples.mapreduce.common.Writable;
 
 class PartialHashOutputCollector<K extends Writable, V extends Writable> implements OutputCollector<K, V> {
 

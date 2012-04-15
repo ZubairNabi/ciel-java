@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.wordcount;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;

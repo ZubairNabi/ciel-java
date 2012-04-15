@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.wordcount;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -20,8 +20,8 @@ package com.ciel.mapreduce.wordcount;
 
 import java.io.*;
 
-import com.ciel.mapreduce.wordcount.WritableComparable;
-import com.ciel.mapreduce.wordcount.WritableComparator;
+import com.asgow.ciel.examples.mapreduce.wordcount.WritableComparable;
+import com.asgow.ciel.examples.mapreduce.wordcount.WritableComparator;
 
 
 /** A WritableComparable for ints. */

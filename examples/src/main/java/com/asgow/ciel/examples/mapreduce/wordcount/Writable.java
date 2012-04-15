@@ -1,4 +1,4 @@
-package com.ciel.mapreduce.common;
+package com.asgow.ciel.examples.mapreduce.wordcount;
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
