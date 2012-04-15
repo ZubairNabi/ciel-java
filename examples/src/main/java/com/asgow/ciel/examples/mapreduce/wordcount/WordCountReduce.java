@@ -91,7 +91,9 @@ public class WordCountReduce implements ConstantNumOutputsTask {
 					}
 				} catch (EOFException e) {
 					break;
-				}				
+				} catch (RuntimeException e) {
+					
+				}
 			}
 			
 			//flush all key, values to collector, close the data stream, and delete the temp file
