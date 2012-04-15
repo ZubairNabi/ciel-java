@@ -34,7 +34,7 @@ public class WordCount implements FirstClassJavaTask {
 		// now shuffle map outputs so that each reduce task receives an input file from each map
 		Reference[][] reduceInput = mapReduce.shuffle(mapResults, numMaps, numReduces);
 		
-		reduce(reduceInput, numReduces);
+		mapReduce.reduce("com.asgow.ciel.examples.mapreduce.wordcount.WordCountReduce", reduceInput, numReduces);
 	}
 
 	public void setup() {
@@ -45,22 +45,4 @@ public class WordCount implements FirstClassJavaTask {
 		return new Reference[0];
 	}
 	
-	public Reference[][] map(Reference mapInputs[], int numMaps, int numReduces) throws IOException {
-		// create references for map task output
-        Reference[][] mapResults = new Reference[numMaps][numReduces];
-		
-        // spawn map tasks
-		for (int i = 0; i < numMaps; ++i) {
-			mapResults[i] = Ciel.spawn(new WordCountMap(mapInputs[i], numReduces));
-		}		
-		return mapResults;
-	}
-	
-	public void reduce(Reference[][] reduceInput, int numReduces) throws IOException {
-		// spawn reduce tasks
-		for (int i = 0; i < numReduces; ++i) {
-			Ciel.tailSpawn(new WordCountReduce(reduceInput[i]));
-		}
-	}
-
 }
