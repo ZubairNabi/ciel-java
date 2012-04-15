@@ -39,7 +39,7 @@ public class SortReduce implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-        System.out.println("SortReduce started");
+        System.out.println("SortReduce started at " + System.currentTimeMillis());
         int nInputs = input.length;
 		InputStream[] is = new InputStream[nInputs];
 		DataOutputStream[] dos = new DataOutputStream[1];
@@ -92,7 +92,7 @@ public class SortReduce implements ConstantNumOutputsTask {
 			System.exit(1);
 		}
 
-        System.out.println("SortReduce finished");		
+        System.out.println("SortReduce finished at " + System.currentTimeMillis());		
 	}
 
 	public void setup() {

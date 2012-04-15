@@ -39,7 +39,7 @@ public class SortMap implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-        System.out.println("SortMap started");
+        System.out.println("SortMap started at " + System.currentTimeMillis());
         
         // convert input reference to stream and then create a BufferedReader
         InputStream inputStream = Ciel.RPC.getStreamForReference(this.input);
@@ -100,7 +100,7 @@ public class SortMap implements ConstantNumOutputsTask {
 			System.exit(1);
 		}
 
-        System.out.println("WordCountMap finished");
+        System.out.println("WordCountMap finished at " + System.currentTimeMillis());
 	}
 
 	public void setup() {
