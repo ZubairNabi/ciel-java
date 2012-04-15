@@ -89,7 +89,7 @@ public class MapTask implements ConstantNumOutputsTask {
 
 	}
 	
-	public void run(DataOutputStream[] dos, int numReducers) {
+	public void run(BufferedReader bufferedReader, DataOutputStream[] dos, int numReducers) {
 		
 	}
 
