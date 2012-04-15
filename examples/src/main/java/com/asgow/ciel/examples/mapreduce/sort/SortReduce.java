@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.asgow.ciel.examples.mapreduce.common.MergeFiles;
-import com.asgow.ciel.examples.mapreduce.wordcount.IntWritable;
 import com.asgow.ciel.examples.mapreduce.wordcount.Text;
 
 import com.asgow.ciel.executor.Ciel;
@@ -76,6 +75,8 @@ public class SortReduce implements ConstantNumOutputsTask {
 					System.out.println(word + " = " + value);
 					outMap.collect(word, value);
 				} catch (EOFException e) {
+					break;
+				} catch (RuntimeException e) {
 					break;
 				} 
 			}

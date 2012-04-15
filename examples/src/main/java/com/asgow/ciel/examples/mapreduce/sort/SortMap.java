@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.StringTokenizer;
 
-import com.asgow.ciel.examples.mapreduce.wordcount.IntWritable;
 import com.asgow.ciel.examples.mapreduce.wordcount.Text;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
@@ -25,7 +24,6 @@ public class SortMap implements ConstantNumOutputsTask {
 
     private Reference input;
     private int nReducers;
-    private final static IntWritable one = new IntWritable(1);
 	
 	public SortMap(Reference input, int nReducers) {
 		this.input = input;
