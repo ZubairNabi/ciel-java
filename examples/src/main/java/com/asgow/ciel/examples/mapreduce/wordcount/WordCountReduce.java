@@ -67,17 +67,31 @@ public class WordCountReduce implements ConstantNumOutputsTask {
 			IncrementerCombiner comb = new IncrementerCombiner();
 			PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(dos, 1, Integer.MAX_VALUE, comb);
 			Text word = new Text();
-			IntWritable value = new IntWritable();		
+			Text previousWord = new Text();
+			IntWritable value = new IntWritable();	
+			int sum = 0;	
+			
+			word.readFields(dis);
+			value.readFields(dis);
+			
+			previousWord = word;
+			sum = value.get();
 			
 			while (true) {								
 				try {
 					word.readFields(dis);
 					value.readFields(dis);
+					if(previousWord == word) {
+						sum += value.get();
+					} else {
+						System.out.println(previousWord + " = " + sum);
+						outMap.collect(previousWord, new IntWritable(sum));
+						previousWord = word;
+						sum = value.get();
+					}
 				} catch (EOFException e) {
 					break;
-				}
-				System.out.println(word + " = " + value);
-				outMap.collect(word, value);
+				}				
 			}
 			
 			//flush all key, values to collector, close the data stream, and delete the temp file
