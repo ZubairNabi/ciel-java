@@ -9,7 +9,7 @@ public class WordCount implements FirstClassJavaTask {
 
 	public void invoke() throws Exception {
 		// check args
-        if(Ciel.args.length != 3) {
+        if(Ciel.args.length != 2) {
         	Ciel.returnPlainString("Invalid number of arguments. Usage: com.asgow.ciel.examples.mapreduce.wordcount.Wordcount" +
         			" [NUM_OF_REDUCE_TASKS] [NUM_OF_INPUTS] -P input[n]=[PATH_TO_FILE], where 0 =< n < total_inputs");
         } 
