@@ -24,12 +24,12 @@ public class Sort implements FirstClassJavaTask {
         Reference[] mapInputs = mapReduce.getReferencesFromPackage(numInputs);
         
         // create maps
-        Reference[][] mapResults = mapReduce.map("com.asgow.ciel.examples.mapreduce.wordcount.SortMap", mapInputs, numInputs, numReduces);
+        Reference[][] mapResults = mapReduce.map("com.asgow.ciel.examples.mapreduce.sort.SortMap", mapInputs, numInputs, numReduces);
         
 		// now shuffle map outputs so that each reduce task receives an input file from each map
 		Reference[][] reduceInput = mapReduce.shuffle(mapResults, numInputs, numReduces);
 		
-		mapReduce.reduce("com.asgow.ciel.examples.mapreduce.wordcount.SortReduce", reduceInput, numReduces);
+		mapReduce.reduce("com.asgow.ciel.examples.mapreduce.sort.SortReduce", reduceInput, numReduces);
 	}
 
 	public void setup() {
