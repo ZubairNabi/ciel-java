@@ -92,8 +92,7 @@ public class SortReduce implements ConstantNumOutputsTask {
 			System.exit(1);
 		}
 
-        System.out.println("SortReduce finished");
-		Ciel.returnPlainString("SortReduce finished and wrote to file " + resultReference.getFilename());
+        System.out.println("SortReduce finished");		
 	}
 
 	public void setup() {

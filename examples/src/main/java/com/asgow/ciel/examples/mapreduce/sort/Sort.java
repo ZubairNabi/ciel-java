@@ -30,6 +30,8 @@ public class Sort implements FirstClassJavaTask {
 		Reference[][] reduceInput = mapReduce.shuffle(mapResults, numInputs, numReduces);
 		
 		mapReduce.reduce("com.asgow.ciel.examples.mapreduce.sort.SortReduce", reduceInput, numReduces);
+		
+		Ciel.returnPlainString("SortReduce job finished!");
 	}
 
 	public void setup() {
