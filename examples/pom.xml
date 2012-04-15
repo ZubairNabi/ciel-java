@@ -64,6 +64,11 @@
       <artifactId>scala-compiler</artifactId>
       <version>${scala.version}</version>
     </dependency>
+      <dependency>
+      <groupId>com.fasterxml.util</groupId>
+      <artifactId>java-merge-sort</artifactId>
+      <version>0.6.0</version>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>
