@@ -1,6 +1,10 @@
 package com.asgow.ciel.examples.mapreduce.common;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -66,5 +70,17 @@ public class MapReduce {
 			parms[0] = reduceInput[i];
 			Ciel.tailSpawn((FirstClassJavaTask) reduceConstructor.newInstance(parms));
 		}
+	}
+	
+	public Reference[] getReferencesFromInputFile(String inputFile) throws IOException {
+		
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(inputFile))));
+		Reference[] references = null;
+		String line;
+		
+		while((line = bufferedReader.readLine())!= null) {
+			;
+		}
+		return references;
 	}
 }
