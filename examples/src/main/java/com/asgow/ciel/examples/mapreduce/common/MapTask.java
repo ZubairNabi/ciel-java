@@ -66,7 +66,7 @@ public class MapTask implements ConstantNumOutputsTask {
 		}
 
         // call map logic
-        run(tempDos, nReducers);
+        run(bufferedReader, tempDos, nReducers);
 			
 		// now sort the temp files with 50 Mb mem limit
 		TextFileSorter sorter = new TextFileSorter(new SortConfig().withMaxMemoryUsage(50 * 1000 * 1000));
