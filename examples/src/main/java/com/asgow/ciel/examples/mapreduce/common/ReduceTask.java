@@ -75,8 +75,9 @@ public class ReduceTask implements ConstantNumOutputsTask {
 		
 		// close input streams
 		for(int i = 0; i < nInputs; i++) {
-			listStreams.remove(i).close();
+			is[i].close();
 		}
+		listStreams.clear();
 		dis.close();
 
         System.out.println("Reduce finished at " + System.currentTimeMillis());		
