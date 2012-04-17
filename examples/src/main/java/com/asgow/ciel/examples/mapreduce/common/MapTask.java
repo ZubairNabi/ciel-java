@@ -79,7 +79,7 @@ public class MapTask implements ConstantNumOutputsTask {
 		for (DataOutputStream d : tempDos) 
 			d.close();
 		// close input stream
-		inputStream.close();
+		bufferedReader.close();
 
         System.out.println("Map finished at " + System.currentTimeMillis());
 	}
