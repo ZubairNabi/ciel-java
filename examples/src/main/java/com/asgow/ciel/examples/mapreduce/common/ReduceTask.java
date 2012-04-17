@@ -70,6 +70,12 @@ public class ReduceTask implements ConstantNumOutputsTask {
         // close output stream and delete temp file
 		dos[0].close();			
 		tempFile.delete();
+		tempOutput.close();
+		
+		// close input streams
+		for(int i = 0; i < nInputs; i++) {
+			is[i].close();
+		}
 
         System.out.println("Reduce finished at " + System.currentTimeMillis());		
 	}
