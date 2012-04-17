@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import com.asgow.ciel.examples.mapreduce.common.MergeFiles;
 
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
-import com.asgow.ciel.references.WritableReference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
 
 public class ReduceTask implements ConstantNumOutputsTask {
@@ -38,14 +36,11 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	public void invoke() throws Exception {
         System.out.println("Reduce started at " + System.currentTimeMillis());
         int nInputs = input.length;
-		InputStream[] is = new InputStream[nInputs];
 		DataOutputStream[] dos = new DataOutputStream[1];
-        OutputStream[] outputs = new OutputStream[1];
         List<InputStream> listStreams = new ArrayList<InputStream>();
 		
 		for(int i = 0; i < nInputs; i++) {
-			is[i] = new BufferedInputStream(Ciel.RPC.getStreamForReference(this.input[i]));
-			listStreams.add(i, is[i]);
+			listStreams.add(i, new BufferedInputStream(Ciel.RPC.getStreamForReference(this.input[i])));
 		}
         
 		// create temporary file for storing results of merge 
@@ -56,10 +51,8 @@ public class ReduceTask implements ConstantNumOutputsTask {
         MergeFiles mergeFiles = new MergeFiles();
         mergeFiles.mergeFiles(listStreams, tempOutput);
 		
-        // create output file reference and get outputstream
-		WritableReference resultReference = Ciel.RPC.getOutputFilename(0);	
-        outputs[0] = resultReference.open();
-		dos[0] = new DataOutputStream(new BufferedOutputStream(outputs[0]));
+        // create output file reference and get outputstream	
+		dos[0] = new DataOutputStream(new BufferedOutputStream(Ciel.RPC.getOutputFilename(0).open()));
 		
 		// create input stream for the single sorted input file
         DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(tempFile)));
@@ -71,12 +64,8 @@ public class ReduceTask implements ConstantNumOutputsTask {
 		dos[0].close();			
 		tempFile.delete();
 		tempOutput.close();
-		
-		
+				
 		// close input streams
-		for(int i = 0; i < nInputs; i++) {
-			is[i].close();
-		}
 		listStreams.clear();
 		dis.close();
 

@@ -6,13 +6,11 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
-import com.asgow.ciel.references.WritableReference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
 import com.fasterxml.sort.SortConfig;
 import com.fasterxml.sort.std.TextFileSorter;
@@ -38,28 +36,23 @@ public class MapTask implements ConstantNumOutputsTask {
 	public void invoke() throws Exception {
         System.out.println("Map started at " + System.currentTimeMillis());
         
-        // convert input reference to stream and then create a BufferedReader
-        InputStream inputStream = Ciel.RPC.getStreamForReference(this.input);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        // create a BufferedReader from input stream
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(this.input)));
         
         // number of output files would be equal to number of reducers, so creating that many outputstreams and references
         OutputStream[] outputs = new OutputStream[nReducers];
-        WritableReference[] resultReference = new WritableReference[nReducers];
         
         // create temp files to store unsorted results
         File tempFiles[] = new File[nReducers];
-        OutputStream[] tempOutputs = new OutputStream[nReducers];
         DataOutputStream[] tempDos = new DataOutputStream[nReducers];
         		       
         for(int i = 0; i < nReducers; i++) {
         	// create temp files and output streams
         	tempFiles[i] = File.createTempFile("reduce_" + Integer.toString(i) , ".tmp");
-        	tempOutputs[i] = new FileOutputStream(tempFiles[i]);
-			tempDos[i] = new DataOutputStream(new BufferedOutputStream(tempOutputs[i]));
+			tempDos[i] = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFiles[i])));
 			
 			// get references for output files and convert to OutputStream
-			resultReference[i] = Ciel.RPC.getOutputFilename(i);
-        	outputs[i] = resultReference[i].open();
+        	outputs[i] = Ciel.RPC.getOutputFilename(i).open();
 		}
 
         // call map logic
