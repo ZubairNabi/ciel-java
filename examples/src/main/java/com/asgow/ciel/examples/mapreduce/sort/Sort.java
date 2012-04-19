@@ -11,13 +11,13 @@ public class Sort implements FirstClassJavaTask {
 		// check args
         if(Ciel.args.length != 2) {
         	Ciel.returnPlainString("Invalid number of arguments. Usage: com.asgow.ciel.examples.mapreduce.sort.Sort" +
-        			" [NUM_OF_REDUCE_TASKS] [NUM_OF_INPUTS] -P input[n]=[PATH_TO_FILE], where 0 =< n < total_inputs");
+        			" [NUM_OF_INPUTS] [NUM_OF_REDUCE_TASKS] -P input[n]=[PATH_TO_FILE], where 0 =< n < total_inputs");
         } 
         
         // get number of reduce tasks and input files
-        int numReduces = Integer.parseInt(Ciel.args[0]);
-        int numInputs = Integer.parseInt(Ciel.args[1]);
-              
+        int numInputs = Integer.parseInt(Ciel.args[0]);
+        int numReduces = Integer.parseInt(Ciel.args[1]);
+         
         // create MapReduce object
         MapReduce mapReduce = new MapReduce();
     	
