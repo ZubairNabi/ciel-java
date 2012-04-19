@@ -47,28 +47,32 @@ public class ReduceTask implements ConstantNumOutputsTask {
         File tempFile = File.createTempFile("reduce_" + Integer.toString(nInputs) , ".tmp");
         FileOutputStream tempOutput = new FileOutputStream(tempFile);
         
+        DataInputStream dis = null;
+        
         // merge all input files into one sorted one
         MergeFiles mergeFiles = new MergeFiles();
-        mergeFiles.mergeFiles(listStreams, tempOutput);
-		
-        // create output file reference and get outputstream	
-		dos[0] = new DataOutputStream(new BufferedOutputStream(Ciel.RPC.getOutputFilename(0).open()));
-		
-		// create input stream for the single sorted input file
-        DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(tempFile)));
-        
-        //run reduce logic
-        run(dos, dis);
-        
-        // close output stream and delete temp file
-		dos[0].close();			
-		tempFile.delete();
-		tempOutput.close();
-				
-		// close input streams
-		listStreams.clear();
-		dis.close();
+        try {
+	        mergeFiles.mergeFiles(listStreams, tempOutput);
+			
+	        // create output file reference and get outputstream	
+			dos[0] = new DataOutputStream(new BufferedOutputStream(Ciel.RPC.getOutputFilename(0).open()));
 
+			// create input stream for the single sorted input file
+	        dis = new DataInputStream(new BufferedInputStream(new FileInputStream(tempFile)));
+	        
+	        //run reduce logic
+	        run(dos, dis);
+        } finally {
+       		// close input streams
+    		listStreams.clear();
+    		dis.close();
+    		
+        	// close output stream and delete temp file
+    		tempFile.delete();
+    		tempOutput.close();
+    		dos[0].close();			
+        }
+        
         System.out.println("Reduce finished at " + System.currentTimeMillis());		
 	}
 

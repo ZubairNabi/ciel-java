@@ -35,7 +35,7 @@ public class MapTask implements ConstantNumOutputsTask {
 
 	public void invoke() throws Exception {
         System.out.println("Map started at " + System.currentTimeMillis());
-        
+   
         // create a BufferedReader from input stream
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(this.input)));
         
@@ -45,34 +45,36 @@ public class MapTask implements ConstantNumOutputsTask {
         // create temp files to store unsorted results
         File tempFiles[] = new File[nReducers];
         DataOutputStream[] tempDos = new DataOutputStream[nReducers];
-        		       
-        for(int i = 0; i < nReducers; i++) {
-        	// create temp files and output streams
-        	tempFiles[i] = File.createTempFile("reduce_" + Integer.toString(i) , ".tmp");
-			tempDos[i] = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFiles[i])));
-			
-			// get references for output files and convert to OutputStream
-        	outputs[i] = Ciel.RPC.getOutputFilename(i).open();
-		}
+        
+        try {
+	        for(int i = 0; i < nReducers; i++) {
+	        	// create temp files and output streams
+	        	tempFiles[i] = File.createTempFile("reduce_" + Integer.toString(i) , ".tmp");
+				tempDos[i] = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFiles[i])));
+				
+				// get references for output files and convert to OutputStream
+	        	outputs[i] = Ciel.RPC.getOutputFilename(i).open();
+			}
+	
+	        // call map logic
+	        run(bufferedReader, tempDos, nReducers);
+				
+			// now sort the temp files with 50 Mb mem limit
+			TextFileSorter sorter = new TextFileSorter(new SortConfig().withMaxMemoryUsage(50 * 1000 * 1000));
+			for(int i = 0; i < nReducers; i++) {
+				sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
+			}
+        } finally {
+    		// close output streams and delete temp files
+        	for(int i = 0; i < nReducers; i++) {
+		        tempFiles[i].delete();
+		        tempDos[i].close();
+		        outputs[i].close();
+			}
+        	// close input stream
+    		bufferedReader.close();
+        }
 
-        // call map logic
-        run(bufferedReader, tempDos, nReducers);
-			
-		// now sort the temp files with 50 Mb mem limit
-		TextFileSorter sorter = new TextFileSorter(new SortConfig().withMaxMemoryUsage(50 * 1000 * 1000));
-		for(int i = 0; i < nReducers; i++) {
-			sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
-	        // delete temp files
-	        tempFiles[i].delete();
-	        // close output stream
-	        outputs[i].close();
-		}
-			
-		// close output streams
-		for (DataOutputStream d : tempDos) 
-			d.close();
-		// close input stream
-		bufferedReader.close();
 
         System.out.println("Map finished at " + System.currentTimeMillis());
 	}
