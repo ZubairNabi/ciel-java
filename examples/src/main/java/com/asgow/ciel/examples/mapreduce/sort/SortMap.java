@@ -10,6 +10,9 @@ import com.asgow.ciel.examples.mapreduce.wordcount.Text;
 import com.asgow.ciel.references.Reference;
 
 public class SortMap extends MapTask {
+	
+	// 50 MB
+	private int spillThreshold = 52428800;
 
 	public SortMap(Reference input, int nReducers) {
 		super(input, nReducers);
@@ -21,7 +24,7 @@ public class SortMap extends MapTask {
         
         String line;
         try {
-			PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, numReducers, 1000);
+			PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, numReducers, spillThreshold);
 			while ((line = bufferedReader.readLine()) != null) { 
 				//System.out.println(line);
 				StringTokenizer itr = new StringTokenizer(line);
