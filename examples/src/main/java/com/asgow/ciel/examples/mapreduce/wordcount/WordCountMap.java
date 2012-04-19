@@ -12,6 +12,8 @@ import com.asgow.ciel.references.Reference;
 public class WordCountMap extends MapTask {
 	
 	private final static IntWritable one = new IntWritable(1);
+	// 50 MB
+	private int spillThreshold = 52428800;
    
     public WordCountMap(Reference input, int nReducers) {
 		super(input, nReducers);
@@ -23,7 +25,7 @@ public class WordCountMap extends MapTask {
         String line;
         try {
         	IncrementerCombiner comb = new IncrementerCombiner();
-			PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(dos, numReducers, 1000, comb);
+			PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(dos, numReducers, spillThreshold, comb);
 			while ((line = bufferedReader.readLine()) != null) { 
 				//System.out.println(line);
 				StringTokenizer itr = new StringTokenizer(line);

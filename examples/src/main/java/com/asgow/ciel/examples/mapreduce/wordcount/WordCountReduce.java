@@ -11,6 +11,9 @@ import com.asgow.ciel.references.Reference;
 
 public class WordCountReduce extends ReduceTask {
    
+	// 50 MB
+	private int spillThreshold = 52428800;
+	
 	public WordCountReduce(Reference[] input) {
 		super(input);
 		// TODO Auto-generated constructor stub
@@ -20,7 +23,7 @@ public class WordCountReduce extends ReduceTask {
 	public void run(DataOutputStream[] dos, DataInputStream dis) {
 		try {
 			IncrementerCombiner comb = new IncrementerCombiner();
-			PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(dos, 1, Integer.MAX_VALUE, comb);
+			PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(dos, 1, spillThreshold, comb);
 			Text word = new Text();
 			Text previousWord = new Text();
 			IntWritable value = new IntWritable();	
