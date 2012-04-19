@@ -68,6 +68,7 @@ public class MapTask implements ConstantNumOutputsTask {
     		// close output streams and delete temp files
         	for(int i = 0; i < nReducers; i++) {
 		        tempFiles[i].delete();
+		        tempDos[i].flush();
 		        tempDos[i].close();
 		        outputs[i].close();
 			}

@@ -74,6 +74,7 @@ public class PartialHashOutputCollector<K extends Writable, V extends Writable> 
 	        pairs.getKey().write(os[mapID]);
 	        pairs.getValue().write(os[mapID]);
 	    }
+	    os[mapID].flush();
 	}
 	
 }
