@@ -20,7 +20,6 @@ public class SortMap extends MapTask {
 	public void run(BufferedReader bufferedReader, DataOutputStream[] dos, int numReducers) {
         
         String line;
-        Text blank = new Text("");
         try {
 			PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, numReducers, 1000);
 			while ((line = bufferedReader.readLine()) != null) { 
@@ -28,6 +27,7 @@ public class SortMap extends MapTask {
 				StringTokenizer itr = new StringTokenizer(line);
 				while (itr.hasMoreTokens()) {
 					Text word = new Text();
+			        Text blank = new Text("");
 					word.set(itr.nextToken());
 					outMap.collect(word, blank);
 				}

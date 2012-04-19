@@ -20,11 +20,10 @@ public class SortReduce extends ReduceTask {
 	@Override
 	public void run(DataOutputStream[] dos, DataInputStream dis) {
 		try {
-			PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, 1, Integer.MAX_VALUE);
-			Text word = new Text();
-			Text value = new Text();	
-			
-			while (true) {								
+			PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, 1, Integer.MAX_VALUE);			
+			while (true) {			
+				Text word = new Text();
+				Text value = new Text();
 				try {
 					word.readFields(dis);
 					value.readFields(dis);
