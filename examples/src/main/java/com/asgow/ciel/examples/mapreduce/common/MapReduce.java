@@ -21,6 +21,7 @@ public class MapReduce {
 		for (int i = 0; i < numInputs; ++i) {
 	        	references[i] = Ciel.RPC.packageLookup("input" + Integer.toString(i));
 		}
+		System.out.println("MapReduce: References obtained for " + Integer.toString(numInputs) + " inputs");
 		return references;
 	}
 	
@@ -43,6 +44,7 @@ public class MapReduce {
 			parms[0] = mapInputs[i];
 			mapResults[i] = Ciel.spawn((ConstantNumOutputsTask) mapConstructor.newInstance(parms));
 		}		
+		System.out.println("MapReduce: " + Integer.toString(numMaps) + " map tasks spawned");
 		return mapResults;
 	}
 	
@@ -53,6 +55,7 @@ public class MapReduce {
 				outputs[i][j] = inputs[j][i];
 			}
 		}
+		System.out.println("MapReduce: Shuffle completed");
 		return outputs;
 	}
 		
@@ -70,6 +73,7 @@ public class MapReduce {
 			parms[0] = reduceInput[i];
 			Ciel.tailSpawn((FirstClassJavaTask) reduceConstructor.newInstance(parms));
 		}
+		System.out.println("MapReduce: " + Integer.toString(numReduces) + " reduce tasks spawned");
 	}
 	
 	public Reference[] getReferencesFromInputFile(String inputFile) throws IOException {
