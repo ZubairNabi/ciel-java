@@ -53,6 +53,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
         MergeFiles mergeFiles = new MergeFiles();
         try {
 	        mergeFiles.mergeFiles(listStreams, tempOutput);
+	        tempOutput.flush();
 			
 	        // create output file reference and get outputstream	
 			dos[0] = new DataOutputStream(new BufferedOutputStream(Ciel.RPC.getOutputFilename(0).open()));
