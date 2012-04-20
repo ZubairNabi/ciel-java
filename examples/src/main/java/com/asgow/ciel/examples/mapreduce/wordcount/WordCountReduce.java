@@ -42,7 +42,7 @@ public class WordCountReduce extends ReduceTask {
 					if(previousWord == word) {
 						sum += value.get();
 					} else {
-						System.out.println(previousWord + " = " + sum);
+						//System.out.println(previousWord + " = " + sum);
 						outMap.collect(previousWord, new IntWritable(sum));
 						previousWord = word;
 						sum = value.get();

@@ -30,7 +30,7 @@ public class SortReduce extends ReduceTask {
 				try {
 					word.readFields(dis);
 					value.readFields(dis);
-					System.out.println(word + " = " + value);
+					//System.out.println(word + " = " + value);
 					outMap.collect(word, value);
 				} catch (EOFException e) {
 					break;
