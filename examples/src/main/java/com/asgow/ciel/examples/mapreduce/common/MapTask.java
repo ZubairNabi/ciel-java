@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
+import com.asgow.ciel.examples.mapreduce.common.DateTime;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
@@ -19,10 +20,12 @@ public class MapTask implements ConstantNumOutputsTask {
 
     private Reference input;
     private int nReducers;
+    private DateTime dateTime;
 	
 	public MapTask(Reference input, int nReducers) {
 		this.input = input;
 		this.nReducers = nReducers;
+		dateTime = new DateTime();
 	}
 	
 	public int getNumOutputs() {
@@ -34,7 +37,7 @@ public class MapTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-        System.out.println("Map started at " + System.currentTimeMillis());
+        System.out.println("Map started at " + dateTime.getCurrentDateTime());
    
         // create a BufferedReader from input stream
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(this.input)));
@@ -78,7 +81,7 @@ public class MapTask implements ConstantNumOutputsTask {
         }
 
 
-        System.out.println("Map finished at " + System.currentTimeMillis());
+        System.out.println("Map finished at " + dateTime.getCurrentDateTime());
 	}
 
 	public void setup() {

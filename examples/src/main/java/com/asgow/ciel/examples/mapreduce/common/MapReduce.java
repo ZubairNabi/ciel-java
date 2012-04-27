@@ -15,13 +15,19 @@ import com.asgow.ciel.tasks.FirstClassJavaTask;
 
 public class MapReduce {
 	
+	private DateTime dateTime;
+	
+	public MapReduce() {
+		dateTime = new DateTime();
+	}
+	
     //TODO: Right now each input is required separately, change to get one input file with links to all other input files
 	public Reference[] getReferencesFromPackage(int numInputs) {
 		Reference[] references = new Reference[numInputs]; 
 		for (int i = 0; i < numInputs; ++i) {
 	        	references[i] = Ciel.RPC.packageLookup("input" + Integer.toString(i));
 		}
-		System.out.println("MapReduce: References obtained for " + Integer.toString(numInputs) + " inputs");
+		System.out.println("MapReduce: References obtained for " + Integer.toString(numInputs) + " inputs at " + dateTime.getCurrentDateTime());
 		return references;
 	}
 	
@@ -44,7 +50,7 @@ public class MapReduce {
 			parms[0] = mapInputs[i];
 			mapResults[i] = Ciel.spawn((ConstantNumOutputsTask) mapConstructor.newInstance(parms));
 		}		
-		System.out.println("MapReduce: " + Integer.toString(numMaps) + " map tasks spawned");
+		System.out.println("MapReduce: " + Integer.toString(numMaps) + " map tasks spawned at " + dateTime.getCurrentDateTime());
 		return mapResults;
 	}
 	
@@ -55,7 +61,7 @@ public class MapReduce {
 				outputs[i][j] = inputs[j][i];
 			}
 		}
-		System.out.println("MapReduce: Shuffle completed");
+		System.out.println("MapReduce: Shuffle completed at " + dateTime.getCurrentDateTime());
 		return outputs;
 	}
 		
@@ -73,7 +79,7 @@ public class MapReduce {
 			parms[0] = reduceInput[i];
 			Ciel.tailSpawn((FirstClassJavaTask) reduceConstructor.newInstance(parms));
 		}
-		System.out.println("MapReduce: " + Integer.toString(numReduces) + " reduce tasks spawned");
+		System.out.println("MapReduce: " + Integer.toString(numReduces) + " reduce tasks spawned at " + dateTime.getCurrentDateTime());
 	}
 	
 	public Reference[] getReferencesFromInputFile(String inputFile) throws IOException {

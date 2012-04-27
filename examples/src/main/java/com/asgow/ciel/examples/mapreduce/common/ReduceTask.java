@@ -20,9 +20,11 @@ import com.asgow.ciel.tasks.ConstantNumOutputsTask;
 public class ReduceTask implements ConstantNumOutputsTask {
         
     private Reference[] input;
+    private DateTime dateTime;
 	
 	public ReduceTask(Reference[] input) {
 		this.input = input;
+		dateTime = new DateTime();
 	}
 	
 	public Reference[] getDependencies() {
@@ -34,7 +36,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-        System.out.println("Reduce started at " + System.currentTimeMillis());
+        System.out.println("Reduce started at " + dateTime.getCurrentDateTime());
         int nInputs = input.length;
 		DataOutputStream[] dos = new DataOutputStream[1];
         List<InputStream> listStreams = new ArrayList<InputStream>();
@@ -75,7 +77,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
     		dos[0].close();			
         }
         
-        System.out.println("Reduce finished at " + System.currentTimeMillis());		
+        System.out.println("Reduce finished at " + dateTime.getCurrentDateTime());		
 	}
 
 	public void setup() {
