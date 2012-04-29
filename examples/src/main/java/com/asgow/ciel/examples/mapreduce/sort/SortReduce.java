@@ -15,8 +15,8 @@ public class SortReduce extends ReduceTask {
 	// 50 MB
 	private int spillThreshold = 52428800;
     
-	public SortReduce(Reference[] input) {
-		super(input);
+	public SortReduce(Reference[] input, int id) {
+		super(input, id);
 		// TODO Auto-generated constructor stub
 	}
 

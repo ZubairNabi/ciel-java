@@ -14,8 +14,8 @@ public class SortMap extends MapTask {
 	// 50 MB
 	private int spillThreshold = 52428800;
 
-	public SortMap(Reference input, int nReducers) {
-		super(input, nReducers);
+	public SortMap(Reference input, int nReducers, int id) {
+		super(input, nReducers, id);
 		// TODO Auto-generated constructor stub
 	}
 

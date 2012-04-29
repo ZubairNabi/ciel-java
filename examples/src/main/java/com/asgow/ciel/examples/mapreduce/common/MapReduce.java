@@ -37,9 +37,10 @@ public class MapReduce {
 		Class mapClass = Class.forName(mapClassName);
 		Constructor mapConstructor = mapClass.getConstructor(new Class[] {
 			Reference.class,
+			int.class,
 			int.class
 		});
-		Object[] parms = new Object[2];
+		Object[] parms = new Object[3];
 		parms[1] = numReduces;
 		
 		// create references for map task output
@@ -48,6 +49,7 @@ public class MapReduce {
         // spawn map tasks
 		for (int i = 0; i < numMaps; ++i) {
 			parms[0] = mapInputs[i];
+			parms[2] = i;
 			mapResults[i] = Ciel.spawn((ConstantNumOutputsTask) mapConstructor.newInstance(parms));
 		}		
 		System.out.println("MapReduce: " + Integer.toString(numMaps) + " map tasks spawned at " + dateTime.getCurrentDateTime());
@@ -70,13 +72,15 @@ public class MapReduce {
 		// get reduce class object using reflection
 		Class reduceClass = Class.forName(reduceClassName);
 		Constructor reduceConstructor = reduceClass.getConstructor(new Class[] {
-			Reference[].class
+			Reference[].class,
+			int.class
 		});
-		Object[] parms = new Object[1];
+		Object[] parms = new Object[2];
 				
 		// spawn reduce tasks
 		for (int i = 0; i < numReduces; ++i) {
 			parms[0] = reduceInput[i];
+			parms[1] = i;
 			Ciel.tailSpawn((FirstClassJavaTask) reduceConstructor.newInstance(parms));
 		}
 		System.out.println("MapReduce: " + Integer.toString(numReduces) + " reduce tasks spawned at " + dateTime.getCurrentDateTime());

@@ -21,11 +21,13 @@ public class MapTask implements ConstantNumOutputsTask {
     private Reference input;
     private int nReducers;
     private DateTime dateTime;
+    private int id;
 	
-	public MapTask(Reference input, int nReducers) {
+	public MapTask(Reference input, int nReducers, int id) {
 		this.input = input;
 		this.nReducers = nReducers;
 		dateTime = new DateTime();
+		this.id = id;
 	}
 	
 	public int getNumOutputs() {
@@ -37,7 +39,7 @@ public class MapTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-        System.out.println("Map started at " + dateTime.getCurrentDateTime());
+        System.out.println("Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime());
    
         // create a BufferedReader from input stream
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(this.input)));
@@ -81,7 +83,7 @@ public class MapTask implements ConstantNumOutputsTask {
         }
 
 
-        System.out.println("Map finished at " + dateTime.getCurrentDateTime());
+        System.out.println("Map " + Integer.toString(id) + " finished at " + dateTime.getCurrentDateTime());
 	}
 
 	public void setup() {

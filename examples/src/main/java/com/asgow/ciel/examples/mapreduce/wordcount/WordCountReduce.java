@@ -14,8 +14,8 @@ public class WordCountReduce extends ReduceTask {
 	// 50 MB
 	private int spillThreshold = 52428800;
 	
-	public WordCountReduce(Reference[] input) {
-		super(input);
+	public WordCountReduce(Reference[] input, int id) {
+		super(input, id);
 		// TODO Auto-generated constructor stub
 	}
 

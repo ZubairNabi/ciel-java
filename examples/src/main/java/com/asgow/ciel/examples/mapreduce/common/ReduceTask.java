@@ -21,10 +21,12 @@ public class ReduceTask implements ConstantNumOutputsTask {
         
     private Reference[] input;
     private DateTime dateTime;
+    private int id;
 	
-	public ReduceTask(Reference[] input) {
+	public ReduceTask(Reference[] input, int id) {
 		this.input = input;
 		dateTime = new DateTime();
+		this.id = id;
 	}
 	
 	public Reference[] getDependencies() {
@@ -36,7 +38,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-        System.out.println("Reduce started at " + dateTime.getCurrentDateTime());
+        System.out.println("Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime());
         int nInputs = input.length;
 		DataOutputStream[] dos = new DataOutputStream[1];
         List<InputStream> listStreams = new ArrayList<InputStream>();
@@ -77,7 +79,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
     		dos[0].close();			
         }
         
-        System.out.println("Reduce finished at " + dateTime.getCurrentDateTime());		
+        System.out.println("Reduce " + Integer.toString(id) + " finished at " + dateTime.getCurrentDateTime());		
 	}
 
 	public void setup() {
