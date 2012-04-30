@@ -72,7 +72,7 @@ public class MapReduce {
 	}
 		
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void reduce(String reduceClassName, Reference[][] reduceInput, int numReduces) throws IOException, SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	public Reference[] reduce(String reduceClassName, Reference[][] reduceInput, int numReduces) throws IOException, SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		// get reduce class object using reflection
 		Class reduceClass = Class.forName(reduceClassName);
 		Constructor reduceConstructor = reduceClass.getConstructor(new Class[] {
@@ -80,14 +80,18 @@ public class MapReduce {
 			int.class
 		});
 		Object[] parms = new Object[2];
+		
+		// create references for reduce task output
+        Reference[] reduceResults = new Reference[numReduces];
 				
 		// spawn reduce tasks
 		for (int i = 0; i < numReduces; ++i) {
 			parms[0] = reduceInput[i];
 			parms[1] = i;
-			Ciel.tailSpawn((FirstClassJavaTask) reduceConstructor.newInstance(parms));
+			reduceResults[i] = Ciel.spawn((ConstantNumOutputsTask) reduceConstructor.newInstance(parms))[0];
 		}
 		System.out.println("MapReduce: " + Integer.toString(numReduces) + " reduce tasks spawned at " + dateTime.getCurrentDateTime());
+		return reduceResults;
 	}
 	
 	public String[] getReferencesFromInputFile(String inputFile, int nInputs,

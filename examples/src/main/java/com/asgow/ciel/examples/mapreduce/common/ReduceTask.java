@@ -15,6 +15,7 @@ import com.asgow.ciel.examples.mapreduce.common.MergeFiles;
 
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
+import com.asgow.ciel.references.WritableReference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
 
 public class ReduceTask implements ConstantNumOutputsTask {
@@ -60,7 +61,8 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        tempOutput.flush();
 			
 	        // create output file reference and get outputstream	
-			dos[0] = new DataOutputStream(new BufferedOutputStream(Ciel.RPC.getOutputFilename(0).open()));
+	        WritableReference writableReference = Ciel.RPC.getNewObjectFilename(this.input.toString());
+			dos[0] = new DataOutputStream(new BufferedOutputStream(writableReference.open()));
 
 			// create input stream for the single sorted input file
 	        dis = new DataInputStream(new BufferedInputStream(new FileInputStream(tempFile)));
