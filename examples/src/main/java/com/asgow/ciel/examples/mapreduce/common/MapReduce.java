@@ -113,7 +113,7 @@ public class MapReduce {
 		// convert json element to an array
 		JsonArray jsonArray= jsonElement.getAsJsonArray();
 		for (int i = 0; i < nInputs; ++i) {
-			inputJsonElements[i] = jsonArray.get(i).getAsString();
+			inputJsonElements[i] = jsonArray.get(i).toString();
 		}	
 		return inputJsonElements;
 	}
