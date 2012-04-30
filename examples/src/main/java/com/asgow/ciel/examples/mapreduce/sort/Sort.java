@@ -3,6 +3,7 @@ package com.asgow.ciel.examples.mapreduce.sort;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.FirstClassJavaTask;
+import com.asgow.ciel.examples.mapreduce.common.DateTime;
 import com.asgow.ciel.examples.mapreduce.common.MapReduce;
 import com.google.gson.JsonElement;
 
@@ -16,7 +17,8 @@ public class Sort implements FirstClassJavaTask {
         			" [NUM_OF_INPUTS] [NUM_OF_REDUCE_TASKS] [REF_INDEX_FILENAME] [REF_INDEX_FILE_SIZE]" +
         			" [NUM_REPLICAS] [HOSTNAME_FOR_EACH_REPLICA] [PORT_FOR_EACH_REPLICA]");
         } 
-        
+        DateTime dateTime = new DateTime();
+        System.out.println("Sort job started at " + dateTime.getCurrentDateTime());
         // parse input args
         int numInputs = Integer.parseInt(Ciel.args[0]);
         int numReduces = Integer.parseInt(Ciel.args[1]);
@@ -53,7 +55,9 @@ public class Sort implements FirstClassJavaTask {
 		Reference[] reduceResults = mapReduce.reduce("com.asgow.ciel.examples.mapreduce.sort.SortReduce", reduceInput, numReduces);
 		
 		Ciel.blockOn(reduceResults);
-		Ciel.returnPlainString("Sort completed! in " + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs");
+		System.out.println("Sort job completed at " + dateTime.getCurrentDateTime());
+		Ciel.returnPlainString("Sort completed! in "
+		 + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs at "+ dateTime.getCurrentDateTime());
 		
 	}
 
