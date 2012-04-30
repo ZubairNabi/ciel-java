@@ -37,6 +37,11 @@ public class WordCount implements FirstClassJavaTask {
         String[] mapInputs = mapReduce.getReferencesFromInputFile(indexFile,
         		numInputs, indexFileSize, hostnames, ports, numReplicas);
         
+        // check that getReferencesFromInputFile did not return a null
+        if(mapInputs == null) {
+    		Ciel.returnPlainString("Error! NUM_OF_INPUTS exceeded number of references in reference index");
+        }
+        
         // create maps
         Reference[][] mapResults = mapReduce.map("com.asgow.ciel.examples.mapreduce.wordcount.WordCountMap", mapInputs, numInputs, numReduces);
         

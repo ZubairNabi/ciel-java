@@ -112,6 +112,10 @@ public class MapReduce {
 		JsonElement jsonElement = new JsonParser().parse(stringBuffer.toString());
 		// convert json element to an array
 		JsonArray jsonArray= jsonElement.getAsJsonArray();
+		// check that specified number of input files is not more than the references in index file
+		if(nInputs > jsonArray.size()) {
+			return null;
+		}
 		for (int i = 0; i < nInputs; ++i) {
 			inputJsonElements[i] = jsonArray.get(i).toString();
 		}	
