@@ -7,14 +7,13 @@ import java.util.StringTokenizer;
 
 import com.asgow.ciel.examples.mapreduce.common.MapTask;
 import com.asgow.ciel.examples.mapreduce.wordcount.Text;
-import com.asgow.ciel.references.Reference;
 
 public class SortMap extends MapTask {
 	
 	// 50 MB
 	private int spillThreshold = 52428800;
 
-	public SortMap(Reference input, int nReducers, int id) {
+	public SortMap(String input, int nReducers, int id) {
 		super(input, nReducers, id);
 		// TODO Auto-generated constructor stub
 	}

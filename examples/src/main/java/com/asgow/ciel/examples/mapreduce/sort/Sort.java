@@ -4,25 +4,38 @@ import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.FirstClassJavaTask;
 import com.asgow.ciel.examples.mapreduce.common.MapReduce;
+import com.google.gson.JsonElement;
 
 public class Sort implements FirstClassJavaTask {
 
 	public void invoke() throws Exception {
 		// check args
-        if(Ciel.args.length != 2) {
+        if(Ciel.args.length < 7) {
         	Ciel.returnPlainString("Invalid number of arguments. Usage: com.asgow.ciel.examples.mapreduce.sort.Sort" +
-        			" [NUM_OF_INPUTS] [NUM_OF_REDUCE_TASKS] -P input[n]=[PATH_TO_FILE], where 0 =< n < total_inputs");
+        			" [NUM_OF_INPUTS] [NUM_OF_REDUCE_TASKS] [REF_INDEX_FILENAME] [REF_INDEX_FILE_SIZE]" +
+        			" [NUM_REPLICAS] [HOSTNAME_FOR_EACH_REPLICA] [PORT_FOR_EACH_REPLICA]");
         } 
         
-        // get number of reduce tasks and input files
+        // parse input args
         int numInputs = Integer.parseInt(Ciel.args[0]);
         int numReduces = Integer.parseInt(Ciel.args[1]);
+        String indexFile = Ciel.args[2];
+        int indexFileSize = Integer.parseInt(Ciel.args[3]);
+        int numReplicas = Integer.parseInt(Ciel.args[4]);
+        String[] hostnames  = new String[numReplicas];
+        short[] ports  = new short[numReplicas];
+        
+        for(int i = 0; i < numReplicas; ++i) {
+        	hostnames[i] = Ciel.args[i + 5];
+        	ports[i] = Short.parseShort(Ciel.args[i + 5 + numReplicas]);
+        }
          
         // create MapReduce object
         MapReduce mapReduce = new MapReduce();
     	
-        // get input references
-        Reference[] mapInputs = mapReduce.getReferencesFromPackage(numInputs);
+        // get input jsonelement strings for references
+        String[] mapInputs = mapReduce.getReferencesFromInputFile(indexFile,
+        		numInputs, indexFileSize, hostnames, ports, numReplicas);
         
         // create maps
         Reference[][] mapResults = mapReduce.map("com.asgow.ciel.examples.mapreduce.sort.SortMap", mapInputs, numInputs, numReduces);

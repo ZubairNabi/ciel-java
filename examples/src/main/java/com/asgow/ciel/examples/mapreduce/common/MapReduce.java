@@ -1,14 +1,18 @@
 package com.asgow.ciel.examples.mapreduce.common;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import com.asgow.ciel.executor.Ciel;
+import com.asgow.ciel.references.ConcreteReference;
+import com.asgow.ciel.references.Netloc;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
 import com.asgow.ciel.tasks.FirstClassJavaTask;
@@ -32,11 +36,11 @@ public class MapReduce {
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Reference[][] map(String mapClassName, Reference mapInputs[], int numMaps, int numReduces) throws IOException, ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+	public Reference[][] map(String mapClassName, String mapInputs[], int numMaps, int numReduces) throws IOException, ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		// get map class object using reflection
 		Class mapClass = Class.forName(mapClassName);
 		Constructor mapConstructor = mapClass.getConstructor(new Class[] {
-			Reference.class,
+			String.class,
 			int.class,
 			int.class
 		});
@@ -86,15 +90,31 @@ public class MapReduce {
 		System.out.println("MapReduce: " + Integer.toString(numReduces) + " reduce tasks spawned at " + dateTime.getCurrentDateTime());
 	}
 	
-	public Reference[] getReferencesFromInputFile(String inputFile) throws IOException {
-		
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream(inputFile))));
-		Reference[] references = null;
-		String line;
-		
-		while((line = bufferedReader.readLine())!= null) {
-			;
+	public String[] getReferencesFromInputFile(String inputFile, int nInputs,
+			int inputFileSize, String hostnames[], short ports[], int nReplicas) throws IOException {
+		// create new concrete reference for index file
+		ConcreteReference indexFileRef = new ConcreteReference(inputFile, inputFileSize);
+		// add locations for each replica
+		for(int i = 0; i < nReplicas; ++i) {
+			indexFileRef.addLocation(new Netloc(hostnames[i], ports[i]));
 		}
-		return references;
+		// number of output json elements is equal to the number of inputs
+		String[] inputJsonElements = new String[nInputs];
+		// get reader from reference stream
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(indexFileRef)));
+		String line;
+		StringBuffer stringBuffer = new StringBuffer();
+		// read the contents of the reference
+		while ((line = bufferedReader.readLine()) != null) {
+			stringBuffer.append(line);
+		}
+		// parse string to get entire contents as json element
+		JsonElement jsonElement = new JsonParser().parse(stringBuffer.toString());
+		// convert json element to an array
+		JsonArray jsonArray= jsonElement.getAsJsonArray();
+		for (int i = 0; i < nInputs; ++i) {
+			inputJsonElements[i] = jsonArray.get(i).getAsString();
+		}	
+		return inputJsonElements;
 	}
 }

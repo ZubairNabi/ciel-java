@@ -15,15 +15,16 @@ import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
 import com.fasterxml.sort.SortConfig;
 import com.fasterxml.sort.std.TextFileSorter;
+import com.google.gson.JsonParser;
 
 public class MapTask implements ConstantNumOutputsTask {
 
-    private Reference input;
+    private String input;
     private int nReducers;
     private DateTime dateTime;
     private int id;
 	
-	public MapTask(Reference input, int nReducers, int id) {
+	public MapTask(String input, int nReducers, int id) {
 		this.input = input;
 		this.nReducers = nReducers;
 		dateTime = new DateTime();
@@ -40,9 +41,12 @@ public class MapTask implements ConstantNumOutputsTask {
 
 	public void invoke() throws Exception {
         System.out.println("Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime());
-   
+        
+        //create input reference
+        Reference indexFileRef = Reference.fromJson(new JsonParser().parse(input).getAsJsonObject());
+        
         // create a BufferedReader from input stream
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(this.input)));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(indexFileRef)));
         
         // number of output files would be equal to number of reducers, so creating that many outputstreams and references
         OutputStream[] outputs = new OutputStream[nReducers];
