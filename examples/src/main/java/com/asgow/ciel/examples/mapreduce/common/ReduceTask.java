@@ -73,13 +73,13 @@ public class ReduceTask implements ConstantNumOutputsTask {
        } finally {
        		// close input streams
     		listStreams.clear();
-    		dis.close();
+    		Utils.closeInputStream(dis);
     		
         	// close output stream and delete temp file
     		tempFile.delete();
-    		tempOutput.close();
+    		Utils.closeOutputStream(tempOutput);
     		dos[0].flush();
-    		dos[0].close();			
+    		Utils.closeOutputStream(dos[0]);	
         }
         
         System.out.println("Reduce " + Integer.toString(id) + " finished at " + dateTime.getCurrentDateTime());		

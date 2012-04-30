@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 
 import com.asgow.ciel.examples.mapreduce.common.DateTime;
+import com.asgow.ciel.examples.mapreduce.common.Utils;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
@@ -81,9 +82,9 @@ public class MapTask implements ConstantNumOutputsTask {
         	for(int i = 0; i < nReducers; i++) {
 		        tempDos[i].flush();
 		        tempFiles[i].delete();
-		        tempDos[i].close();
+		        Utils.closeOutputStream(tempDos[i]);
 		        outputs[i].flush();
-		        outputs[i].close();
+		        Utils.closeOutputStream(outputs[i]);
 			}
         	// close input stream
     		bufferedReader.close();

@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.asgow.ciel.examples.mapreduce.common.Combiner;
-import com.asgow.ciel.examples.mapreduce.common.MemoryUsage;
 import com.asgow.ciel.examples.mapreduce.common.OutputCollector;
 import com.asgow.ciel.examples.mapreduce.common.Writable;
+import com.asgow.ciel.examples.mapreduce.common.Utils;
 
 public class PartialHashOutputCollector<K extends Writable, V extends Writable> implements OutputCollector<K, V> {
 
@@ -25,7 +25,7 @@ public class PartialHashOutputCollector<K extends Writable, V extends Writable> 
 		flushThresh = flushThreshold;
 		os = out;
 		comb = combiner;
-		initialMemory = MemoryUsage.checkMemory();
+		initialMemory = Utils.checkMemory();
 		
 		maps = new ArrayList<HashMap<K, V>>(numMaps);
 		for (int i = 0; i < numMaps; i++) 
@@ -43,11 +43,11 @@ public class PartialHashOutputCollector<K extends Writable, V extends Writable> 
 		//System.out.println(key + " goes into map " + targetMap);
 		HashMap<K, V> hmap = maps.get(targetMap);
 		
-		if ((MemoryUsage.checkMemory() - initialMemory) > flushThresh) {
+		if ((Utils.checkMemory() - initialMemory) > flushThresh) {
 			// Flush out the hashmap
 			//System.err.println("flushing");
 			flush(targetMap);
-			initialMemory = MemoryUsage.checkMemory();
+			initialMemory = Utils.checkMemory();
 		}
 		// Insert element into map
 		if (hmap.containsKey(key)) {
