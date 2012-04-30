@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 public class Sort implements FirstClassJavaTask {
 
 	public void invoke() throws Exception {
+		long startTime = System.currentTimeMillis();
 		// check args
         if(Ciel.args.length < 7) {
         	Ciel.returnPlainString("Invalid number of arguments. Usage: com.asgow.ciel.examples.mapreduce.sort.Sort" +
@@ -52,7 +53,7 @@ public class Sort implements FirstClassJavaTask {
 		Reference[] reduceResults = mapReduce.reduce("com.asgow.ciel.examples.mapreduce.sort.SortReduce", reduceInput, numReduces);
 		
 		Ciel.blockOn(reduceResults);
-		Ciel.returnPlainString("Sort completed!");
+		Ciel.returnPlainString("Sort completed! in " + Long.toString(System.currentTimeMillis() - startTime) + " secs");
 		
 	}
 

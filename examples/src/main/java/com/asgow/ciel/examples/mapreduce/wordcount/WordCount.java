@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 public class WordCount implements FirstClassJavaTask {
 
 	public void invoke() throws Exception {
+		long startTime = System.currentTimeMillis();
 		// check args
         if(Ciel.args.length < 7) {
         	Ciel.returnPlainString("Invalid number of arguments. Usage: com.asgow.ciel.examples.mapreduce.wordcount.WordCount" +
@@ -52,7 +53,7 @@ public class WordCount implements FirstClassJavaTask {
 		Reference[] reduceResults = mapReduce.reduce("com.asgow.ciel.examples.mapreduce.wordcount.WordCountReduce", reduceInput, numReduces);
 		
 		Ciel.blockOn(reduceResults);
-		Ciel.returnPlainString("WordCount completed!");
+		Ciel.returnPlainString("WordCount completed! in " + Long.toString(System.currentTimeMillis() - startTime) + " secs");
 	}
 
 	public void setup() {
