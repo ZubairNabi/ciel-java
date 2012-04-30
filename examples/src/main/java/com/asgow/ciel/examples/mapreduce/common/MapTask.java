@@ -73,6 +73,9 @@ public class MapTask implements ConstantNumOutputsTask {
 			for(int i = 0; i < nReducers; i++) {
 				sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
 			}
+        } catch (Exception e) {
+        	 System.out.println("Exception while running MapTask");
+        	 e.printStackTrace();
         } finally {
     		// close output streams and delete temp files
         	for(int i = 0; i < nReducers; i++) {
@@ -86,7 +89,6 @@ public class MapTask implements ConstantNumOutputsTask {
     		bufferedReader.close();
         }
 
-
         System.out.println("Map " + Integer.toString(id) + " finished at " + dateTime.getCurrentDateTime());
 	}
 
@@ -94,7 +96,7 @@ public class MapTask implements ConstantNumOutputsTask {
 
 	}
 	
-	public void run(BufferedReader bufferedReader, DataOutputStream[] dos, int numReducers) {
+	public void run(BufferedReader bufferedReader, DataOutputStream[] dos, int numReducers) throws Exception {
 		
 	}
 

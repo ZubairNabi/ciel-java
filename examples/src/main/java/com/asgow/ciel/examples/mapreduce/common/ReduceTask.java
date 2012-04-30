@@ -67,7 +67,10 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        
 	        //run reduce logic
 	        run(dos, dis);
-        } finally {
+        } catch (Exception e) {
+        	System.out.println("Exception while running ReduceTask");
+       	 	e.printStackTrace();
+       } finally {
        		// close input streams
     		listStreams.clear();
     		dis.close();
@@ -86,7 +89,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 		
 	}
 	
-	public void run(DataOutputStream[] dos, DataInputStream dis) {
+	public void run(DataOutputStream[] dos, DataInputStream dis) throws Exception {
 		
 	}
 

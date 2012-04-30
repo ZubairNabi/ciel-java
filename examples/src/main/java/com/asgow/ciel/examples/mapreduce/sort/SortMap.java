@@ -19,27 +19,20 @@ public class SortMap extends MapTask {
 	}
 
 	@Override
-	public void run(BufferedReader bufferedReader, DataOutputStream[] dos, int numReducers) {
+	public void run(BufferedReader bufferedReader, DataOutputStream[] dos, int numReducers) throws Exception {
         
         String line;
-        try {
-			PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, numReducers, spillThreshold);
-			while ((line = bufferedReader.readLine()) != null) { 
-				//System.out.println(line);
-				StringTokenizer itr = new StringTokenizer(line);
-				while (itr.hasMoreTokens()) {
-					Text word = new Text();
-			        Text blank = new Text("");
-					word.set(itr.nextToken());
-					outMap.collect(word, blank);
-				}
+		PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, numReducers, spillThreshold);
+		while ((line = bufferedReader.readLine()) != null) { 
+			//System.out.println(line);
+			StringTokenizer itr = new StringTokenizer(line);
+			while (itr.hasMoreTokens()) {
+				Text word = new Text();
+		        Text blank = new Text("");
+				word.set(itr.nextToken());
+				outMap.collect(word, blank);
 			}
-			outMap.flushAll();
-				
-        } catch (IOException e) {
-			System.out.println("IOException while running SortMap");
-			e.printStackTrace();
-			System.exit(1);
 		}
+		outMap.flushAll();
 	}
 }

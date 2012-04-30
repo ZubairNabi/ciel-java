@@ -21,33 +21,24 @@ public class SortReduce extends ReduceTask {
 	}
 
 	@Override
-	public void run(DataOutputStream[] dos, DataInputStream dis) {
-		try {
-			PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, 1, spillThreshold);			
-			while (true) {			
-				Text word = new Text();
-				Text value = new Text();
-				try {
-					word.readFields(dis);
-					value.readFields(dis);
-					//System.out.println(word + " = " + value);
-					outMap.collect(word, value);
-				} catch (EOFException e) {
-					break;
-				} catch (RuntimeException e) {
-					break;
-				} 
-			}
-			
-			//flush all key, values to collector, close the data stream, and delete the temp file
-			outMap.flushAll();
-						
-		} catch (IOException e) {
-			System.out.println("IOException while running SortReduce");
-			e.printStackTrace();
-			System.exit(1);
+	public void run(DataOutputStream[] dos, DataInputStream dis) throws Exception {
+		PartialHashOutputCollector<Text, Text> outMap = new PartialHashOutputCollector<Text, Text>(dos, 1, spillThreshold);			
+		while (true) {			
+			Text word = new Text();
+			Text value = new Text();
+			try {
+				word.readFields(dis);
+				value.readFields(dis);
+				//System.out.println(word + " = " + value);
+				outMap.collect(word, value);
+			} catch (EOFException e) {
+				break;
+			} catch (RuntimeException e) {
+				break;
+			} 
 		}
-	
+		//flush all key, values to collector, close the data stream, and delete the temp file
+		outMap.flushAll();
 	}
 
 }

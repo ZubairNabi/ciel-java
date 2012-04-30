@@ -20,27 +20,20 @@ public class WordCountMap extends MapTask {
 	}
 
     @Override
-	public void run(BufferedReader bufferedReader, DataOutputStream[] dos, int numReducers) {     
+	public void run(BufferedReader bufferedReader, DataOutputStream[] dos, int numReducers) throws Exception {     
         String line;
-        try {
-        	IncrementerCombiner comb = new IncrementerCombiner();
-			PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(dos, numReducers, spillThreshold, comb);
-			while ((line = bufferedReader.readLine()) != null) { 
-				//System.out.println(line);
-				StringTokenizer itr = new StringTokenizer(line);
-				while (itr.hasMoreTokens()) {
-					Text word = new Text();
-					word.set(itr.nextToken());
-					outMap.collect(word, one);
-				}
+    	IncrementerCombiner comb = new IncrementerCombiner();
+		PartialHashOutputCollector<Text, IntWritable> outMap = new PartialHashOutputCollector<Text, IntWritable>(dos, numReducers, spillThreshold, comb);
+		while ((line = bufferedReader.readLine()) != null) { 
+			//System.out.println(line);
+			StringTokenizer itr = new StringTokenizer(line);
+			while (itr.hasMoreTokens()) {
+				Text word = new Text();
+				word.set(itr.nextToken());
+				outMap.collect(word, one);
 			}
-			outMap.flushAll();			
-		} catch (IOException e) {
-			System.out.println("IOException while running WordCountMap");
-			e.printStackTrace();
-			System.exit(1);
 		}
-
+		outMap.flushAll();			
 	}
 	
 }
