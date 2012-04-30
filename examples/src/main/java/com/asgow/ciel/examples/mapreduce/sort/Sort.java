@@ -40,6 +40,7 @@ public class Sort implements FirstClassJavaTask {
         // check that getReferencesFromInputFile did not return a null
         if(mapInputs == null) {
     		Ciel.returnPlainString("Error! NUM_OF_INPUTS exceeded number of references in reference index");
+    		System.exit(1);
         }
         
         // create maps
