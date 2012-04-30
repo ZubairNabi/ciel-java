@@ -49,7 +49,10 @@ public class WordCount implements FirstClassJavaTask {
 		// now shuffle map outputs so that each reduce task receives an input file from each map
 		Reference[][] reduceInput = mapReduce.shuffle(mapResults, numInputs, numReduces);
 		
-		mapReduce.reduce("com.asgow.ciel.examples.mapreduce.wordcount.WordCountReduce", reduceInput, numReduces);
+		Reference[] reduceResults = mapReduce.reduce("com.asgow.ciel.examples.mapreduce.wordcount.WordCountReduce", reduceInput, numReduces);
+		
+		Ciel.blockOn(reduceResults);
+		Ciel.returnPlainString("WordCount completed!");
 	}
 
 	public void setup() {

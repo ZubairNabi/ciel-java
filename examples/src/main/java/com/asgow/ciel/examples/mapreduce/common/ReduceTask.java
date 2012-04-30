@@ -61,7 +61,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        tempOutput.flush();
 			
 	        // create output file reference and get outputstream	
-	        WritableReference writableReference = Ciel.RPC.getNewObjectFilename(this.input.toString());
+	        WritableReference writableReference = Ciel.RPC.getOutputFilename(0);
 			dos[0] = new DataOutputStream(new BufferedOutputStream(writableReference.open()));
 
 			// create input stream for the single sorted input file
