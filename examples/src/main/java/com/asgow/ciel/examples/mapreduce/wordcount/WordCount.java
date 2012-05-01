@@ -17,7 +17,6 @@ public class WordCount implements FirstClassJavaTask {
         			" [NUM_REPLICAS] [HOSTNAME_FOR_EACH_REPLICA] [PORT_FOR_EACH_REPLICA]");
         } 
         DateTime dateTime = new DateTime();
-        System.out.println("MapReduce: WordCount job started at " + dateTime.getCurrentDateTime());
         // parse input args
         int numInputs = Integer.parseInt(Ciel.args[0]);
         int numReduces = Integer.parseInt(Ciel.args[1]);
@@ -36,7 +35,9 @@ public class WordCount implements FirstClassJavaTask {
         if(Ciel.args.length == (numReplicas * 2 + 5 + 1)) {
         	jobID = Ciel.args[numReplicas * 2 + 5];
         }
-         
+        
+        System.out.println("MapReduce: WordCount job started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+        
         // create MapReduce object
         MapReduce mapReduce = new MapReduce(jobID);
     	
@@ -46,7 +47,7 @@ public class WordCount implements FirstClassJavaTask {
         
         // check that getReferencesFromInputFile did not return a null
         if(mapInputs == null) {
-    		Ciel.returnPlainString("MapReduce: Error! NUM_OF_INPUTS exceeded number of references in reference index");
+    		Ciel.returnPlainString("MapReduce: Error! NUM_OF_INPUTS exceeded number of references in reference index" + " for job: " + jobID);
     		System.exit(1);
         }
         
@@ -59,9 +60,9 @@ public class WordCount implements FirstClassJavaTask {
 		Reference[] reduceResults = mapReduce.reduce("com.asgow.ciel.examples.mapreduce.wordcount.WordCountReduce", reduceInput, numReduces);
 		
 		Ciel.blockOn(reduceResults);
-		System.out.println("MapReduce: WordCount job completed at " + dateTime.getCurrentDateTime());
+		System.out.println("MapReduce: WordCount job completed at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		Ciel.returnPlainString("MapReduce: WordCount completed! in "
-		 + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs at "+ dateTime.getCurrentDateTime());
+		 + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs at "+ dateTime.getCurrentDateTime() + " for job: " + jobID);
 		
 	}
 
