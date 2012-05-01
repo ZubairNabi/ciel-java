@@ -43,6 +43,7 @@ public class MapTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
+		long startTime = System.currentTimeMillis();
         System.out.println("MapReduce: Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         
         //create input reference
@@ -70,12 +71,15 @@ public class MapTask implements ConstantNumOutputsTask {
 	
 	        // call map logic
 	        run(bufferedReader, tempDos, nReducers);
-				
+	        System.out.println("MapReduce: Map " + Integer.toString(id) + " logic completed in "
+					 + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 			// now sort the temp files with 50 Mb mem limit
 			TextFileSorter sorter = new TextFileSorter(new SortConfig().withMaxMemoryUsage(50 * 1000 * 1000));
 			for(int i = 0; i < nReducers; i++) {
 				sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
 			}
+			System.out.println("MapReduce: Map " + Integer.toString(id) + " sort completed in "
+					 + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         } catch (Exception e) {
         	 System.out.println("MapReduce: Exception while running MapTask" + " for job: " + jobID);
         	 e.printStackTrace();
@@ -92,7 +96,8 @@ public class MapTask implements ConstantNumOutputsTask {
     		bufferedReader.close();
         }
 
-        System.out.println("MapReduce: Map " + Integer.toString(id) + " finished at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+        System.out.println("MapReduce: Map " + Integer.toString(id) + " finished in "
+		 + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 	}
 
 	public void setup() {
