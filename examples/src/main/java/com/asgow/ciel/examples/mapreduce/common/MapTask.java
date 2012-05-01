@@ -24,12 +24,14 @@ public class MapTask implements ConstantNumOutputsTask {
     private int nReducers;
     private DateTime dateTime;
     private int id;
+    private String jobID;
 	
-	public MapTask(String input, int nReducers, int id) {
+	public MapTask(String input, int nReducers, int id, String jobID) {
 		this.input = input;
 		this.nReducers = nReducers;
 		dateTime = new DateTime();
 		this.id = id;
+		this.jobID = jobID;
 	}
 	
 	public int getNumOutputs() {
@@ -41,7 +43,7 @@ public class MapTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-        System.out.println("Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime());
+        System.out.println("MapReduce: Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         
         //create input reference
         Reference indexFileRef = Reference.fromJson(new JsonParser().parse(input).getAsJsonObject());
@@ -75,7 +77,7 @@ public class MapTask implements ConstantNumOutputsTask {
 				sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
 			}
         } catch (Exception e) {
-        	 System.out.println("Exception while running MapTask");
+        	 System.out.println("MapReduce: Exception while running MapTask" + " for job: " + jobID);
         	 e.printStackTrace();
         } finally {
     		// close output streams and delete temp files
@@ -90,7 +92,7 @@ public class MapTask implements ConstantNumOutputsTask {
     		bufferedReader.close();
         }
 
-        System.out.println("Map " + Integer.toString(id) + " finished at " + dateTime.getCurrentDateTime());
+        System.out.println("MapReduce: Map " + Integer.toString(id) + " finished at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 	}
 
 	public void setup() {

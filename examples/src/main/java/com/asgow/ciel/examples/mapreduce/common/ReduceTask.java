@@ -23,11 +23,13 @@ public class ReduceTask implements ConstantNumOutputsTask {
     private Reference[] input;
     private DateTime dateTime;
     private int id;
+    private String jobID;
 	
-	public ReduceTask(Reference[] input, int id) {
+	public ReduceTask(Reference[] input, int id, String jobID) {
 		this.input = input;
 		dateTime = new DateTime();
 		this.id = id;
+		this.jobID = jobID;
 	}
 	
 	public Reference[] getDependencies() {
@@ -39,7 +41,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-        System.out.println("Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime());
+        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         int nInputs = input.length;
 		DataOutputStream[] dos = new DataOutputStream[1];
         List<InputStream> listStreams = new ArrayList<InputStream>();
@@ -70,7 +72,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        //run reduce logic
 	        run(dos, dis);
         } catch (Exception e) {
-        	System.out.println("Exception while running ReduceTask");
+        	System.out.println("MapReduce: Exception while running ReduceTask" + " for job: " + jobID);
        	 	e.printStackTrace();
        } finally {
        		// close input streams
@@ -84,7 +86,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
     		Utils.closeOutputStream(dos[0]);	
         }
         
-        System.out.println("Reduce " + Integer.toString(id) + " finished at " + dateTime.getCurrentDateTime());		
+        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " finished at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
 	}
 
 	public void setup() {

@@ -3,7 +3,6 @@ package com.asgow.ciel.examples.mapreduce.sort;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
-import java.io.IOException;
 
 import com.asgow.ciel.examples.mapreduce.common.ReduceTask;
 import com.asgow.ciel.examples.mapreduce.wordcount.Text;
@@ -15,8 +14,8 @@ public class SortReduce extends ReduceTask {
 	// 50 MB
 	private int spillThreshold = 52428800;
     
-	public SortReduce(Reference[] input, int id) {
-		super(input, id);
+	public SortReduce(Reference[] input, int id, String jobID) {
+		super(input, id, jobID);
 		// TODO Auto-generated constructor stub
 	}
 

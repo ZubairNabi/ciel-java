@@ -2,7 +2,6 @@ package com.asgow.ciel.examples.mapreduce.wordcount;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.StringTokenizer;
 
 
@@ -14,8 +13,8 @@ public class WordCountMap extends MapTask {
 	// 50 MB
 	private int spillThreshold = 52428800;
    
-    public WordCountMap(String input, int nReducers, int id) {
-		super(input, nReducers, id);
+    public WordCountMap(String input, int nReducers, int id, String jobID) {
+		super(input, nReducers, id, jobID);
 		// TODO Auto-generated constructor stub
 	}
 

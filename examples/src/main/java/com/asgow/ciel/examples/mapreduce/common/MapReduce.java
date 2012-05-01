@@ -15,13 +15,14 @@ import com.asgow.ciel.references.ConcreteReference;
 import com.asgow.ciel.references.Netloc;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
-import com.asgow.ciel.tasks.FirstClassJavaTask;
 
 public class MapReduce {
 	
 	private DateTime dateTime;
+	private String jobID;
 	
-	public MapReduce() {
+	public MapReduce(String jobID) {
+		this.jobID = jobID;
 		dateTime = new DateTime();
 	}
 	
@@ -31,7 +32,7 @@ public class MapReduce {
 		for (int i = 0; i < numInputs; ++i) {
 	        	references[i] = Ciel.RPC.packageLookup("input" + Integer.toString(i));
 		}
-		System.out.println("MapReduce: References obtained for " + Integer.toString(numInputs) + " inputs at " + dateTime.getCurrentDateTime());
+		System.out.println("MapReduce: References obtained for " + Integer.toString(numInputs) + " inputs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		return references;
 	}
 	
@@ -42,10 +43,12 @@ public class MapReduce {
 		Constructor mapConstructor = mapClass.getConstructor(new Class[] {
 			String.class,
 			int.class,
-			int.class
+			int.class,
+			String.class
 		});
-		Object[] parms = new Object[3];
+		Object[] parms = new Object[4];
 		parms[1] = numReduces;
+		parms[3] = jobID;
 		
 		// create references for map task output
         Reference[][] mapResults = new Reference[numMaps][numReduces];
@@ -56,7 +59,7 @@ public class MapReduce {
 			parms[2] = i;
 			mapResults[i] = Ciel.spawn((ConstantNumOutputsTask) mapConstructor.newInstance(parms));
 		}		
-		System.out.println("MapReduce: " + Integer.toString(numMaps) + " map tasks spawned at " + dateTime.getCurrentDateTime());
+		System.out.println("MapReduce: " + Integer.toString(numMaps) + " map tasks spawned at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		return mapResults;
 	}
 	
@@ -67,7 +70,7 @@ public class MapReduce {
 				outputs[i][j] = inputs[j][i];
 			}
 		}
-		System.out.println("MapReduce: Shuffle completed at " + dateTime.getCurrentDateTime());
+		System.out.println("MapReduce: Shuffle completed at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		return outputs;
 	}
 		
@@ -77,9 +80,11 @@ public class MapReduce {
 		Class reduceClass = Class.forName(reduceClassName);
 		Constructor reduceConstructor = reduceClass.getConstructor(new Class[] {
 			Reference[].class,
-			int.class
+			int.class,
+			String.class
 		});
-		Object[] parms = new Object[2];
+		Object[] parms = new Object[3];
+		parms[2] = jobID;
 		
 		// create references for reduce task output
         Reference[] reduceResults = new Reference[numReduces];
@@ -90,7 +95,7 @@ public class MapReduce {
 			parms[1] = i;
 			reduceResults[i] = Ciel.spawn((ConstantNumOutputsTask) reduceConstructor.newInstance(parms))[0];
 		}
-		System.out.println("MapReduce: " + Integer.toString(numReduces) + " reduce tasks spawned at " + dateTime.getCurrentDateTime());
+		System.out.println("MapReduce: " + Integer.toString(numReduces) + " reduce tasks spawned at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		return reduceResults;
 	}
 	
@@ -123,6 +128,7 @@ public class MapReduce {
 		for (int i = 0; i < nInputs; ++i) {
 			inputJsonElements[i] = jsonArray.get(i).toString();
 		}	
+		System.out.println("MapReduce: JsonElements obtained for " + Integer.toString(nInputs) + " inputs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		return inputJsonElements;
 	}
 }
