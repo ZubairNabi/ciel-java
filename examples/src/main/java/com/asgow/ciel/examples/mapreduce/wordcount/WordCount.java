@@ -62,7 +62,7 @@ public class WordCount implements FirstClassJavaTask {
 		Ciel.blockOn(reduceResults);
 		System.out.println("MapReduce: WordCount job completed at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		Ciel.returnPlainString("MapReduce: WordCount completed! in "
-		 + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs at "+ dateTime.getCurrentDateTime() + " for job: " + jobID);
+		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at "+ dateTime.getCurrentDateTime() + " for job: " + jobID);
 		
 	}
 

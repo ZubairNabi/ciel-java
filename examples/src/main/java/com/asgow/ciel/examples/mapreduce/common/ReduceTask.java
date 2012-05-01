@@ -64,7 +64,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        tempOutput.flush();
 	        
 	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merge completed in "
-	       		 + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+	       		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 			
 	        // create output file reference and get outputstream	
 	        WritableReference writableReference = Ciel.RPC.getOutputFilename(0);
@@ -91,7 +91,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
         }
         
         System.out.println("MapReduce: Reduce " + Integer.toString(id) + " finished in "
-		 + Long.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
+		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
 	}
 
 	public void setup() {
