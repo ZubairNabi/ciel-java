@@ -33,7 +33,7 @@ public class Sort implements FirstClassJavaTask {
         	ports[i] = Short.parseShort(Ciel.args[i + 5 + numReplicas]);
         }
         
-        if(Ciel.args[numReplicas * 2 + 5] != null) {
+        if(Ciel.args.length == (numReplicas * 2 + 5 + 1)) {
         	jobID = Ciel.args[numReplicas * 2 + 5];
         }
          
