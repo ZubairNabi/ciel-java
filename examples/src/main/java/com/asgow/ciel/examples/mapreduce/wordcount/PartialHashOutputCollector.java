@@ -19,13 +19,11 @@ public class PartialHashOutputCollector<K extends Writable, V extends Writable> 
 	int flushThresh;
 	DataOutputStream[] os;
 	Combiner<V> comb;
-	long initialMemory;
 	
 	public PartialHashOutputCollector(DataOutputStream[] out, int numMaps, int flushThreshold, Combiner<V> combiner) {
 		flushThresh = flushThreshold;
 		os = out;
 		comb = combiner;
-		initialMemory = Utils.checkMemory();
 		
 		maps = new ArrayList<HashMap<K, V>>(numMaps);
 		for (int i = 0; i < numMaps; i++) 
@@ -43,11 +41,10 @@ public class PartialHashOutputCollector<K extends Writable, V extends Writable> 
 		//System.out.println(key + " goes into map " + targetMap);
 		HashMap<K, V> hmap = maps.get(targetMap);
 		
-		if ((Utils.checkMemory() - initialMemory) > flushThresh) {
+		if (hmap.size() > flushThresh) {
 			// Flush out the hashmap
 			//System.err.println("flushing");
 			flush(targetMap);
-			initialMemory = Utils.checkMemory();
 		}
 		// Insert element into map
 		if (hmap.containsKey(key)) {
