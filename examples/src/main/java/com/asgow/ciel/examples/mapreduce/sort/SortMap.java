@@ -10,8 +10,7 @@ import com.asgow.ciel.examples.mapreduce.wordcount.Text;
 
 public class SortMap extends MapTask {
 	
-	// 50 MB
-	private int spillThreshold = 52428800;
+	private int spillThreshold = 100;
 
 	public SortMap(String input, int nReducers, int id, String jobID) {
 		super(input, nReducers, id, jobID);

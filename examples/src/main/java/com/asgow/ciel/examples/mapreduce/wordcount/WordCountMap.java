@@ -10,8 +10,8 @@ import com.asgow.ciel.examples.mapreduce.common.MapTask;
 public class WordCountMap extends MapTask {
 	
 	private final static IntWritable one = new IntWritable(1);
-	// 50 MB
-	private int spillThreshold = 52428800;
+
+	private int spillThreshold = 100;
    
     public WordCountMap(String input, int nReducers, int id, String jobID) {
 		super(input, nReducers, id, jobID);

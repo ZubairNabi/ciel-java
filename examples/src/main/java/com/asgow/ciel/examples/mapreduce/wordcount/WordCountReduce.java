@@ -10,8 +10,7 @@ import com.asgow.ciel.references.Reference;
 
 public class WordCountReduce extends ReduceTask {
    
-	// 50 MB
-	private int spillThreshold = 52428800;
+	private int spillThreshold = 100;
 	
 	public WordCountReduce(Reference[] input, int id, String jobID) {
 		super(input, id, jobID);
