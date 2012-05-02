@@ -3,7 +3,6 @@ package com.asgow.ciel.examples.mapreduce.common;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
@@ -13,8 +12,6 @@ import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.references.WritableReference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
-import com.fasterxml.sort.SortConfig;
-import com.fasterxml.sort.std.TextFileSorter;
 import com.google.gson.JsonParser;
 
 public class MapTask implements ConstantNumOutputsTask {
@@ -59,13 +56,13 @@ public class MapTask implements ConstantNumOutputsTask {
         OutputStream[] outputs = new OutputStream[nReducers];
         
         // create temp files to store unsorted results
-        File tempFiles[] = new File[nReducers];
+       // File tempFiles[] = new File[nReducers];
         DataOutputStream[] tempDos = new DataOutputStream[nReducers];
         
         try {
 	        for(int i = 0; i < nReducers; i++) {
 	        	// create temp files and output streams
-	        	tempFiles[i] = File.createTempFile("reduce_" + Integer.toString(i) , ".tmp");
+	        	//tempFiles[i] = File.createTempFile("reduce_" + Integer.toString(i) , ".tmp");
 				//tempDos[i] = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFiles[i])));
 				
 				// get references for output files and convert to OutputStream
@@ -73,19 +70,19 @@ public class MapTask implements ConstantNumOutputsTask {
 	        	outputs[i] = writableReferences[i].open();
 	        	tempDos[i] = new DataOutputStream(new BufferedOutputStream(outputs[i]));
 			}
-	        long ssize = 0;
+	        //long ssize = 0;
 	        // call map logic
 	        run(bufferedReader, tempDos, nReducers);
 	        System.out.println("MapReduce: Map " + Integer.toString(id) + " logic completed in "
 					 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 			// now sort the temp files with 50 Mb mem limit
-			TextFileSorter sorter = new TextFileSorter(new SortConfig().withMaxMemoryUsage(50 * 1000 * 1000));
-			for(int i = 0; i < nReducers; i++) {
-				ssize += tempFiles[i].length();
+			//TextFileSorter sorter = new TextFileSorter(new SortConfig().withMaxMemoryUsage(50 * 1000 * 1000));
+			//for(int i = 0; i < nReducers; i++) {
+				//ssize += tempFiles[i].length();
 				
 				//sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
-			}
-			System.out.println("zubair size of map input files:" + Long.toString(ssize));
+			//}
+			//System.out.println("zubair size of map input files:" + Long.toString(ssize));
 			System.out.println("MapReduce: Map " + Integer.toString(id) + " sort completed in "
 					 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         } catch (Exception e) {
@@ -95,10 +92,9 @@ public class MapTask implements ConstantNumOutputsTask {
     		// close output streams and delete temp files
         	for(int i = 0; i < nReducers; i++) {
         		System.out.println("MapReduce: Map " + Integer.toString(id) + " produced output reference: " 
-		                + writableReferences[i].getFilename() + " with size: " + Long.toString(tempFiles[i].length())
-		        		+ " at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+		                + writableReferences[i].getFilename() + " at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		        tempDos[i].flush();
-		        tempFiles[i].delete();
+		        //tempFiles[i].delete();
 		        Utils.closeOutputStream(tempDos[i]);
 		        outputs[i].flush();
 		        Utils.closeOutputStream(outputs[i]);
