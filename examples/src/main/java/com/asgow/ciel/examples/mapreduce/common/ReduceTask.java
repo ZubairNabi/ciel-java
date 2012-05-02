@@ -8,10 +8,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.OutputStream;
 
-import com.asgow.ciel.examples.mapreduce.common.MergeFiles;
+import com.asgow.ciel.examples.mapreduce.terasort.SWTeraMerger;
 
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
@@ -45,24 +44,28 @@ public class ReduceTask implements ConstantNumOutputsTask {
         System.out.println("MapReduce: Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         int nInputs = input.length;
 		DataOutputStream[] dos = new DataOutputStream[1];
-        List<InputStream> listStreams = new ArrayList<InputStream>();
-		
+        InputStream[] inputs = new InputStream[nInputs];
 		for(int i = 0; i < nInputs; i++) {
-			listStreams.add(i, new BufferedInputStream(Ciel.RPC.getStreamForReference(this.input[i])));
+			inputs[i] = Ciel.RPC.getStreamForReference(this.input[i]);
+			System.out.println("MapReduce: Map " + Integer.toString(id) + " assigned input reference: " 
+			        + this.input[i].toJson().get("__ref__").toString() + " at " 
+			        + dateTime.getCurrentDateTime() + " for job: " + jobID);
+			inputs[i] = Ciel.RPC.getStreamForReference(this.input[i]);					 
 		}
+
         
 		// create temporary file for storing results of merge 
         File tempFile = File.createTempFile("reduce_" + Integer.toString(nInputs) , ".tmp");
-        FileOutputStream tempOutput = new FileOutputStream(tempFile);
+        OutputStream[] tempOutput = new OutputStream[1];
+        tempOutput[0] = new FileOutputStream(tempFile);
         
         DataInputStream dis = null;
         
         // merge all input files into one sorted one
-        MergeFiles mergeFiles = new MergeFiles();
+        SWTeraMerger merger = new SWTeraMerger();
+        merger.merge(inputs, tempOutput, nInputs);
         try {
-	        mergeFiles.mergeFiles(listStreams, tempOutput);
-	        tempOutput.flush();
-	        
+	        System.out.println("Merge file size: " + Long.toString(tempFile.length()));      
 	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merge completed in "
 	       		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 			
@@ -80,12 +83,14 @@ public class ReduceTask implements ConstantNumOutputsTask {
        	 	e.printStackTrace();
        } finally {
        		// close input streams
-    		listStreams.clear();
     		Utils.closeInputStream(dis);
+    		for(int i = 0; i < nInputs; i++) {
+    			Utils.closeInputStream(inputs[i]);
+    		}
     		
         	// close output stream and delete temp file
     		tempFile.delete();
-    		Utils.closeOutputStream(tempOutput);
+    		//Utils.closeOutputStream(tempOutput);
     		dos[0].flush();
     		Utils.closeOutputStream(dos[0]);	
         }

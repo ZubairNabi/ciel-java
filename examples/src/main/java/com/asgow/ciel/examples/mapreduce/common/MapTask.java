@@ -4,8 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
@@ -13,6 +11,7 @@ import com.asgow.ciel.examples.mapreduce.common.DateTime;
 import com.asgow.ciel.examples.mapreduce.common.Utils;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
+import com.asgow.ciel.references.WritableReference;
 import com.asgow.ciel.tasks.ConstantNumOutputsTask;
 import com.fasterxml.sort.SortConfig;
 import com.fasterxml.sort.std.TextFileSorter;
@@ -48,11 +47,15 @@ public class MapTask implements ConstantNumOutputsTask {
         
         //create input reference
         Reference indexFileRef = Reference.fromJson(new JsonParser().parse(input).getAsJsonObject());
+        System.out.println("MapReduce: Map " + Integer.toString(id) + " assigned input reference: " 
+        + (new JsonParser().parse(input).getAsJsonObject().get("__ref__").toString()) + " at " 
+        + dateTime.getCurrentDateTime() + " for job: " + jobID);
         
         // create a BufferedReader from input stream
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(indexFileRef)));
         
         // number of output files would be equal to number of reducers, so creating that many outputstreams and references
+        WritableReference[] writableReferences = new WritableReference[nReducers];
         OutputStream[] outputs = new OutputStream[nReducers];
         
         // create temp files to store unsorted results
@@ -63,12 +66,14 @@ public class MapTask implements ConstantNumOutputsTask {
 	        for(int i = 0; i < nReducers; i++) {
 	        	// create temp files and output streams
 	        	tempFiles[i] = File.createTempFile("reduce_" + Integer.toString(i) , ".tmp");
-				tempDos[i] = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFiles[i])));
+				//tempDos[i] = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFiles[i])));
 				
 				// get references for output files and convert to OutputStream
-	        	outputs[i] = Ciel.RPC.getOutputFilename(i).open();
+				writableReferences[i] = Ciel.RPC.getOutputFilename(i);
+	        	outputs[i] = writableReferences[i].open();
+	        	tempDos[i] = new DataOutputStream(new BufferedOutputStream(outputs[i]));
 			}
-	
+	        long ssize = 0;
 	        // call map logic
 	        run(bufferedReader, tempDos, nReducers);
 	        System.out.println("MapReduce: Map " + Integer.toString(id) + " logic completed in "
@@ -76,8 +81,11 @@ public class MapTask implements ConstantNumOutputsTask {
 			// now sort the temp files with 50 Mb mem limit
 			TextFileSorter sorter = new TextFileSorter(new SortConfig().withMaxMemoryUsage(50 * 1000 * 1000));
 			for(int i = 0; i < nReducers; i++) {
-				sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
+				ssize += tempFiles[i].length();
+				
+				//sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
 			}
+			System.out.println("zubair size of map input files:" + Long.toString(ssize));
 			System.out.println("MapReduce: Map " + Integer.toString(id) + " sort completed in "
 					 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         } catch (Exception e) {
@@ -86,6 +94,9 @@ public class MapTask implements ConstantNumOutputsTask {
         } finally {
     		// close output streams and delete temp files
         	for(int i = 0; i < nReducers; i++) {
+        		System.out.println("MapReduce: Map " + Integer.toString(id) + " produced output reference: " 
+		                + writableReferences[i].getFilename() + " with size: " + Long.toString(tempFiles[i].length())
+		        		+ " at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		        tempDos[i].flush();
 		        tempFiles[i].delete();
 		        Utils.closeOutputStream(tempDos[i]);
