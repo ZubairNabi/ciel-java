@@ -47,7 +47,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
         InputStream[] inputs = new InputStream[nInputs];
 		for(int i = 0; i < nInputs; i++) {
 			inputs[i] = Ciel.RPC.getStreamForReference(this.input[i]);
-			System.out.println("MapReduce: Map " + Integer.toString(id) + " assigned input reference: " 
+			System.out.println("MapReduce: Reduce " + Integer.toString(id) + " assigned input reference: " 
 			        + this.input[i].toJson().get("__ref__").toString() + " at " 
 			        + dateTime.getCurrentDateTime() + " for job: " + jobID);
 			inputs[i] = Ciel.RPC.getStreamForReference(this.input[i]);					 
@@ -65,7 +65,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
         SWTeraMerger merger = new SWTeraMerger();
         merger.merge(inputs, tempOutput, nInputs);
         try {
-	        System.out.println("Merge file size: " + Long.toString(tempFile.length()));      
+	        System.out.println("MapReduce: Reduce: Merge file size: " + Long.toString(tempFile.length()));      
 	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merge completed in "
 	       		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 			
