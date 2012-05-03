@@ -60,7 +60,8 @@ public class WordCount implements FirstClassJavaTask {
 		Reference[] reduceResults = mapReduce.reduce("com.asgow.ciel.examples.mapreduce.wordcount.WordCountReduce", reduceInput, numReduces);
 		
 		Ciel.blockOn(reduceResults);
-		System.out.println("MapReduce: WordCount job completed at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+		System.out.println("MapReduce: WordCount completed! in "
+				 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at "+ dateTime.getCurrentDateTime() + " for job: " + jobID);
 		Ciel.returnPlainString("MapReduce: WordCount completed! in "
 		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at "+ dateTime.getCurrentDateTime() + " for job: " + jobID);
 		
