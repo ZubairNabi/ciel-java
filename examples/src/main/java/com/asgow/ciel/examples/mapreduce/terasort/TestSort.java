@@ -26,11 +26,11 @@ public class TestSort implements FirstClassJavaTask {
 		System.out.println("SortTest started");
 		File outputFile = File.createTempFile("outputFile" , ".tmp");
 		Reference inputReference = Ciel.RPC.packageLookup("input");
-		InputStream[] in = new InputStream[1];
-		OutputStream[] out = new OutputStream[1];
+		InputStream in = null;
+		OutputStream out = null;
 		try {
-			in[0] = Ciel.RPC.getStreamForReference(inputReference);
-			out[0] = new FileOutputStream(outputFile);
+			in = Ciel.RPC.getStreamForReference(inputReference);
+			out = new FileOutputStream(outputFile);
 			new SWTeraBucketer().invoke(in, out, 1);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -47,8 +47,8 @@ public class TestSort implements FirstClassJavaTask {
 			  System.out.println (strLine);
 		  }
 		indata.close();
-		in[0].close();
-		out[0].close();
+		in.close();
+		out.close();
 		outputFile.delete();
 		
 		Ciel.returnPlainString("SortTest completed");

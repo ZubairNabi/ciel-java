@@ -76,21 +76,11 @@ public class SWTeraBucketer {
 		
 	}
 
-	public void invoke(InputStream[] inputs, OutputStream[] outputs, int nPartitions) {
-		
-		/* Expected: 
-		 * Two inputs:
-		 * 0: The partition descriptors written by SWTeraSampler
-		 * 1: A sequence of lines to be parsed and bucketed
-		 * N outputs:
-		 * (One per partition)
-		 * One argument:
-		 * 0: The number of reducers
-		 */
+	public void invoke(InputStream inputs, OutputStream outputs, int nPartitions) {
 	
 		DataInputStream dis = null;
 		if(nPartitions > 1) {
-		    dis = new DataInputStream(inputs[0]);
+		    dis = new DataInputStream(inputs);
 		}
 		Text[] boundaries = new Text[nPartitions - 1];
 		
@@ -122,7 +112,7 @@ public class SWTeraBucketer {
 		
 		RecordReader<Text, Text> reader = null;
 		try {
-			reader = new TeraInputFormat.TeraRecordReader(inputs[0]);
+			reader = new TeraInputFormat.TeraRecordReader(inputs);
 		}
 		catch(IOException e) {
 			System.err.println("Exception opening input: " + e);
@@ -159,7 +149,7 @@ public class SWTeraBucketer {
 			Object[] pairs = outBuffers[i].toArray();
 			if(outBuffers[i].size() > 0)
 				new QuickSort().sort(new ISTextArray(pairs), 0, pairs.length);
-			pushThreads[i] = new StreamPusher(pairs, outputs[i]);
+			pushThreads[i] = new StreamPusher(pairs, outputs);
 			
 		}
 		
