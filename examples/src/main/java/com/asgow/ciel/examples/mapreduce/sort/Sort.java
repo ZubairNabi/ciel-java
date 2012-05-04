@@ -60,11 +60,11 @@ public class Sort implements FirstClassJavaTask {
 		
 		Ciel.blockOn(reduceResults);
 		Ciel.log("MapReduce: Sort completed! in "
-				 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+				 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		System.out.println("MapReduce: Sort completed! in "
-				 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+				 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		Ciel.returnPlainString("MapReduce: Sort completed! in "
-		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+		 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		
 	}
 
