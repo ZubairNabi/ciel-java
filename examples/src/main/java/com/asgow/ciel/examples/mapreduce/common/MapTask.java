@@ -45,6 +45,7 @@ public class MapTask implements ConstantNumOutputsTask {
 
 	public void invoke() throws Exception {
 		long startTime = System.currentTimeMillis();
+		Ciel.log("MapReduce: Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         System.out.println("MapReduce: Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         
         //create input reference
@@ -110,7 +111,9 @@ public class MapTask implements ConstantNumOutputsTask {
         	// close input stream
     		bufferedReader.close();
         }
-
+        
+        Ciel.log("MapReduce: Map " + Integer.toString(id) + " finished in "
+       		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         System.out.println("MapReduce: Map " + Integer.toString(id) + " finished in "
 		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 	}

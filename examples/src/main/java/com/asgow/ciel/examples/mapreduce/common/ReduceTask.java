@@ -41,7 +41,10 @@ public class ReduceTask implements ConstantNumOutputsTask {
 
 	public void invoke() throws Exception {
 		long startTime = System.currentTimeMillis();
+		Ciel.log("MapReduce: Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         System.out.println("MapReduce: Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+        
+        // create input references
         int nInputs = input.length;
 		DataOutputStream[] dos = new DataOutputStream[1];
         InputStream[] inputs = new InputStream[nInputs];
@@ -95,6 +98,8 @@ public class ReduceTask implements ConstantNumOutputsTask {
     		Utils.closeOutputStream(dos[0]);	
         }
         
+        Ciel.log("MapReduce: Reduce " + Integer.toString(id) + " finished in "
+       		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
         System.out.println("MapReduce: Reduce " + Integer.toString(id) + " finished in "
 		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
 	}

@@ -35,7 +35,8 @@ public class Sort implements FirstClassJavaTask {
         if(Ciel.args.length == (numReplicas * 2 + 5 + 1)) {
         	jobID = Ciel.args[numReplicas * 2 + 5];
         }
-        System.out.println("Sort job started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+        Ciel.log("MapReduce: Sort job started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+        System.out.println("MapReduce: Sort job started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         // create MapReduce object
         MapReduce mapReduce = new MapReduce(jobID);
     	
@@ -58,6 +59,8 @@ public class Sort implements FirstClassJavaTask {
 		Reference[] reduceResults = mapReduce.reduce("com.asgow.ciel.examples.mapreduce.sort.SortReduce", reduceInput, numReduces);
 		
 		Ciel.blockOn(reduceResults);
+		Ciel.log("MapReduce: Sort completed! in "
+				 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		System.out.println("MapReduce: Sort completed! in "
 				 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		Ciel.returnPlainString("MapReduce: Sort completed! in "
