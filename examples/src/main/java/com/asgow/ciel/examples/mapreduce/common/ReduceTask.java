@@ -40,7 +40,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-		long startTime = System.currentTimeMillis();
+		long taskStartTime = System.currentTimeMillis();
 		Ciel.log("MapReduce: Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         System.out.println("MapReduce: Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         
@@ -64,6 +64,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
         
         DataInputStream dis = null;
         
+        long mergeStartTime = System.currentTimeMillis();
         // merge all input files into one sorted one
         SWTeraMerger merger = new SWTeraMerger();
         merger.merge(inputs, tempOutput, nInputs);
@@ -71,7 +72,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merged file size: " 
 	        		+ Long.toString(tempFile.length()) + " for job: " + jobID);      
 	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merge completed in "
-	       		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+	       		 + Double.toString((System.currentTimeMillis() - mergeStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 			
 	        // create output file reference and get outputstream	
 	        WritableReference writableReference = Ciel.RPC.getOutputFilename(0);
@@ -80,8 +81,11 @@ public class ReduceTask implements ConstantNumOutputsTask {
 			// create input stream for the single sorted input file
 	        dis = new DataInputStream(new BufferedInputStream(new FileInputStream(tempFile)));
 	        
+	        long logicStartTime = System.currentTimeMillis();
 	        //run reduce logic
 	        run(dos, dis);
+	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " logic completed in "
+					 + Double.toString((System.currentTimeMillis() - logicStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         } catch (Exception e) {
         	System.out.println("MapReduce: Exception while running Reduce " + Integer.toString(id) 
         			+ " for job: " + jobID);
@@ -101,9 +105,9 @@ public class ReduceTask implements ConstantNumOutputsTask {
         }
         
         Ciel.log("MapReduce: Reduce " + Integer.toString(id) + " finished in "
-       		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
+       		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
         System.out.println("MapReduce: Reduce " + Integer.toString(id) + " finished in "
-		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
+		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
 	}
 
 	public void setup() {

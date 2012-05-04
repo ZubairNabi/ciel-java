@@ -44,7 +44,7 @@ public class MapTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-		long startTime = System.currentTimeMillis();
+		long taskStartTime = System.currentTimeMillis();
 		Ciel.log("MapReduce: Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         System.out.println("MapReduce: Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         
@@ -78,21 +78,21 @@ public class MapTask implements ConstantNumOutputsTask {
 	        	//tempDos[i] = new DataOutputStream(new BufferedOutputStream(outputs[i]));
 			}
 	        long ssize = 0;
+	        long logicStartTime = System.currentTimeMillis();
 	        // call map logic
 	        run(bufferedReader, tempDos, nReducers);
 	        System.out.println("MapReduce: Map " + Integer.toString(id) + " logic completed in "
-					 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+					 + Double.toString((System.currentTimeMillis() - logicStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+	        long sortStartTime = System.currentTimeMillis();
 			// now sort the temp files with 50 Mb mem limit
-			//TextFileSorter sorter = new TextFileSorter(new SortConfig().withMaxMemoryUsage(50 * 1000 * 1000));
 			for(int i = 0; i < nReducers; i++) {
 				ssize += tempFiles[i].length();	
 				tempIs[i] = new FileInputStream(tempFiles[i]);
 				new SWTeraBucketer().invoke(tempIs[i], outputs[i], 1);
-				//sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
 			}
 			System.out.println("MapReduce: Map " + Integer.toString(id) + " total size of map output files: " + Long.toString(ssize) + " for job: " + jobID);
 			System.out.println("MapReduce: Map " + Integer.toString(id) + " sort completed in "
-					 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+					 + Double.toString((System.currentTimeMillis() - sortStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         } catch (Exception e) {
         	 System.out.println("MapReduce: Exception while running Map " + Integer.toString(id)
         			 + " for job: " + jobID);
@@ -114,9 +114,9 @@ public class MapTask implements ConstantNumOutputsTask {
         }
         
         Ciel.log("MapReduce: Map " + Integer.toString(id) + " finished in "
-       		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+       		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         System.out.println("MapReduce: Map " + Integer.toString(id) + " finished in "
-		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 	}
 
 	public void setup() {
