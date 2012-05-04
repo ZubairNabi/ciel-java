@@ -68,7 +68,8 @@ public class ReduceTask implements ConstantNumOutputsTask {
         SWTeraMerger merger = new SWTeraMerger();
         merger.merge(inputs, tempOutput, nInputs);
         try {
-	        System.out.println("MapReduce: Reduce: Merged file size: " + Long.toString(tempFile.length()) + " for job: " + jobID);      
+	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merged file size: " 
+	        		+ Long.toString(tempFile.length()) + " for job: " + jobID);      
 	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merge completed in "
 	       		 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 			
@@ -82,7 +83,8 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        //run reduce logic
 	        run(dos, dis);
         } catch (Exception e) {
-        	System.out.println("MapReduce: Exception while running ReduceTask" + " for job: " + jobID);
+        	System.out.println("MapReduce: Exception while running Reduce " + Integer.toString(id) 
+        			+ " for job: " + jobID);
        	 	e.printStackTrace();
        } finally {
        		// close input streams

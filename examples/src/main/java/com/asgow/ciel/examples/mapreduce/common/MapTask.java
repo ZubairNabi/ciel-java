@@ -90,11 +90,12 @@ public class MapTask implements ConstantNumOutputsTask {
 				new SWTeraBucketer().invoke(tempIs[i], outputs[i], 1);
 				//sorter.sort(new FileInputStream(tempFiles[i]), outputs[i]);
 			}
-			System.out.println("MapReduce: Map: Total size of map output files: " + Long.toString(ssize) + " for job: " + jobID);
+			System.out.println("MapReduce: Map " + Integer.toString(id) + " total size of map output files: " + Long.toString(ssize) + " for job: " + jobID);
 			System.out.println("MapReduce: Map " + Integer.toString(id) + " sort completed in "
 					 + Double.toString((System.currentTimeMillis() - startTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         } catch (Exception e) {
-        	 System.out.println("MapReduce: Exception while running MapTask" + " for job: " + jobID);
+        	 System.out.println("MapReduce: Exception while running Map " + Integer.toString(id)
+        			 + " for job: " + jobID);
         	 e.printStackTrace();
         } finally {
     		// close output streams and delete temp files
