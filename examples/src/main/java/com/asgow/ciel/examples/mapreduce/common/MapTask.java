@@ -57,6 +57,9 @@ public class MapTask implements ConstantNumOutputsTask {
         // create a BufferedReader from input stream
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(indexFileRef)));
         
+        System.out.println("MapReduce: Map " + Integer.toString(id) + " input fetch completed in "
+				 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+        
         // number of output files would be equal to number of reducers, so creating that many outputstreams and references
         WritableReference[] writableReferences = new WritableReference[nReducers];
         OutputStream[] outputs = new OutputStream[nReducers];
