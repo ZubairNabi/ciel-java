@@ -57,7 +57,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 		}
 
 		System.out.println("MapReduce: Reduce " + Integer.toString(id) + " input fetch completed in "
-				 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+				 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		
 		// create temporary file for storing results of merge 
         File tempFile = File.createTempFile("reduce_" + Integer.toString(nInputs) , ".tmp");
@@ -74,7 +74,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merged file size: " 
 	        		+ Long.toString(tempFile.length()) + " for job: " + jobID);      
 	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merge completed in "
-	       		 + Double.toString((System.currentTimeMillis() - mergeStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+	       		 + Double.toString((System.currentTimeMillis() - mergeStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 			
 	        // create output file reference and get outputstream	
 	        WritableReference writableReference = Ciel.RPC.getOutputFilename(0);
@@ -87,7 +87,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        //run reduce logic
 	        run(dos, dis);
 	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " logic completed in "
-					 + Double.toString((System.currentTimeMillis() - logicStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+					 + Double.toString((System.currentTimeMillis() - logicStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
         } catch (Exception e) {
         	System.out.println("MapReduce: Exception while running Reduce " + Integer.toString(id) 
         			+ " for job: " + jobID);
@@ -107,9 +107,9 @@ public class ReduceTask implements ConstantNumOutputsTask {
         }
         
         Ciel.log("MapReduce: Reduce " + Integer.toString(id) + " finished in "
-       		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
+       		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
         System.out.println("MapReduce: Reduce " + Integer.toString(id) + " finished in "
-		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
+		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
 	}
 
 	public void setup() {
