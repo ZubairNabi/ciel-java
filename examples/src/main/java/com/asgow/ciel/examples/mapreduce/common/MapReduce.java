@@ -1,6 +1,7 @@
 package com.asgow.ciel.examples.mapreduce.common;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
@@ -130,5 +131,15 @@ public class MapReduce {
 		}	
 		System.out.println("MapReduce: JsonElements obtained for " + Integer.toString(nInputs) + " inputs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		return inputJsonElements;
+	}
+	
+	public String[] getFilesFromFolder(String folderPath, int nInputs) {
+		String[] filePaths = new String[nInputs];
+		File folderFile = new File(folderPath);
+		File[] files = folderFile.listFiles();
+		for(int i = 0; i < nInputs; ++i) {
+			filePaths[i] = files[i].getAbsolutePath();
+		}
+		return filePaths;
 	}
 }
