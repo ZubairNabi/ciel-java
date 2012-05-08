@@ -98,7 +98,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
     		
         	// close output stream and delete temp file
     		tempFile.delete();
-    		//Utils.closeOutputStream(tempOutput);
+    		Utils.closeOutputStream(tempOutput[0]);
     		dos[0].flush();
     		Utils.closeOutputStream(dos[0]);	
         }
