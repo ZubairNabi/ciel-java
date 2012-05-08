@@ -19,7 +19,7 @@ public class Logger {
 		} catch (UnknownHostException e) {
 			System.out.println("Logger failed to get hostname at: " + dateTime.getCurrentDateTime() 
 					+ " for job: " + jobID);
-			e.printStackTrace();
+			hostname = "none";
 		}
 	}
 	

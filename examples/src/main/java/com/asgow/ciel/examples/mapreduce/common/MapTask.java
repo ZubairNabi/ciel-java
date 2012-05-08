@@ -52,9 +52,8 @@ public class MapTask implements ConstantNumOutputsTask {
         
         //create input reference
         Reference indexFileRef = Reference.fromJson(new JsonParser().parse(input).getAsJsonObject());
-        System.out.println("MapReduce: Map " + Integer.toString(id) + " assigned input reference: " 
-        + (new JsonParser().parse(input).getAsJsonObject().get("__ref__").toString()) + " at " 
-        + dateTime.getCurrentDateTime() + " for job: " + jobID);
+        logger.LogEvent("Map " + Integer.toString(id) + " assigned input reference: " 
+        + (new JsonParser().parse(input).getAsJsonObject().get("__ref__").toString()));
         
         // create a BufferedReader from input stream
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(indexFileRef)));
