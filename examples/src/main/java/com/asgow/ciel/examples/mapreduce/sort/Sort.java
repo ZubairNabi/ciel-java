@@ -4,6 +4,7 @@ import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.FirstClassJavaTask;
 import com.asgow.ciel.examples.mapreduce.common.DateTime;
+import com.asgow.ciel.examples.mapreduce.common.Logger;
 import com.asgow.ciel.examples.mapreduce.common.MapReduce;
 
 public class Sort implements FirstClassJavaTask {
@@ -35,8 +36,10 @@ public class Sort implements FirstClassJavaTask {
         if(Ciel.args.length == (numReplicas * 2 + 5 + 1)) {
         	jobID = Ciel.args[numReplicas * 2 + 5];
         }
+        //Get logger object
+        Logger logger = new Logger(jobID);
         Ciel.log("MapReduce: Sort job started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-        System.out.println("MapReduce: Sort job started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+        logger.LogEvent("Sort job started");
         // create MapReduce object
         MapReduce mapReduce = new MapReduce(jobID);
     	
@@ -61,8 +64,7 @@ public class Sort implements FirstClassJavaTask {
 		Ciel.blockOn(reduceResults);
 		Ciel.log("MapReduce: Sort completed! in "
 				 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-		System.out.println("MapReduce: Sort completed! in "
-				 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+		logger.LogEventTimestamp("Sort completed!", startTime);
 		Ciel.returnPlainString("MapReduce: Sort completed! in "
 		 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		

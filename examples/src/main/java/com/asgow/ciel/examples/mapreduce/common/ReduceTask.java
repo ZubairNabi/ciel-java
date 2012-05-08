@@ -41,8 +41,10 @@ public class ReduceTask implements ConstantNumOutputsTask {
 
 	public void invoke() throws Exception {
 		long taskStartTime = System.currentTimeMillis();
+		//create logger
+		Logger logger = new Logger(jobID);
 		Ciel.log("MapReduce: Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+        logger.LogEvent("Reduce " + Integer.toString(id) + " started");
         
         // create input references
         int nInputs = input.length;
@@ -50,14 +52,12 @@ public class ReduceTask implements ConstantNumOutputsTask {
         InputStream[] inputs = new InputStream[nInputs];
 		for(int i = 0; i < nInputs; i++) {
 			inputs[i] = Ciel.RPC.getStreamForReference(this.input[i]);
-			System.out.println("MapReduce: Reduce " + Integer.toString(id) + " assigned input reference: " 
-			        + this.input[i].toJson().get("__ref__").toString() + " at " 
-			        + dateTime.getCurrentDateTime() + " for job: " + jobID);
+			logger.LogEvent("Reduce " + Integer.toString(id) + " assigned input reference: " 
+			        + this.input[i].toJson().get("__ref__").toString());
 			inputs[i] = Ciel.RPC.getStreamForReference(this.input[i]);					 
 		}
-
-		System.out.println("MapReduce: Reduce " + Integer.toString(id) + " input fetch completed in "
-				 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+		
+		logger.LogEventTimestamp("Reduce " + Integer.toString(id) + " input fetch completed", taskStartTime);
 		
 		// create temporary file for storing results of merge 
         File tempFile = File.createTempFile("reduce_" + Integer.toString(nInputs) , ".tmp");
@@ -71,11 +71,10 @@ public class ReduceTask implements ConstantNumOutputsTask {
         SWTeraMerger merger = new SWTeraMerger();
         merger.merge(inputs, tempOutput, nInputs);
         try {
-	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merged file size: " 
-	        		+ Long.toString(tempFile.length()) + " for job: " + jobID);      
-	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " merge completed in "
-	       		 + Double.toString((System.currentTimeMillis() - mergeStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-			
+        	logger.LogEvent("Reduce " + Integer.toString(id) + " merged file size: " 
+	        		+ Long.toString(tempFile.length()));
+        	logger.LogEventTimestamp("Reduce " + Integer.toString(id) + " merge completed", mergeStartTime);
+	       
 	        // create output file reference and get outputstream	
 	        WritableReference writableReference = Ciel.RPC.getOutputFilename(0);
 			dos[0] = new DataOutputStream(new BufferedOutputStream(writableReference.open()));
@@ -86,11 +85,9 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        long logicStartTime = System.currentTimeMillis();
 	        //run reduce logic
 	        run(dos, dis);
-	        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " logic completed in "
-					 + Double.toString((System.currentTimeMillis() - logicStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+	        logger.LogEventTimestamp("Reduce " + Integer.toString(id) + " logic completed", logicStartTime);
         } catch (Exception e) {
-        	System.out.println("MapReduce: Exception while running Reduce " + Integer.toString(id) 
-        			+ " for job: " + jobID);
+        	logger.LogEvent("Exception while running Reduce " + Integer.toString(id));
        	 	e.printStackTrace();
        } finally {
        		// close input streams
@@ -107,9 +104,8 @@ public class ReduceTask implements ConstantNumOutputsTask {
         }
         
         Ciel.log("MapReduce: Reduce " + Integer.toString(id) + " finished in "
-       		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
-        System.out.println("MapReduce: Reduce " + Integer.toString(id) + " finished in "
-		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);		
+       		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);	
+        logger.LogEventTimestamp("Reduce " + Integer.toString(id) + " finished", taskStartTime);
 	}
 
 	public void setup() {
