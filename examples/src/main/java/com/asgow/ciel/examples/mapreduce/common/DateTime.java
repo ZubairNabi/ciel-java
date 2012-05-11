@@ -20,6 +20,7 @@ public class DateTime implements Serializable {
 	}
 	
 	public String getCurrentDateTime() {
+		date = new Date();
 		return this.dateFormat.format(date);
 	}
 
