@@ -16,7 +16,7 @@ public class DateTime implements Serializable {
 	
 	public DateTime () {
 		date = new Date();
-		dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS");
 	}
 	
 	public String getCurrentDateTime() {
