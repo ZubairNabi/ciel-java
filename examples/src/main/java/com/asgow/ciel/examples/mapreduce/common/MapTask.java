@@ -44,6 +44,7 @@ public class MapTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
+		File CIEL_TEMP_DIR = new File("/mnt/ciel_data/tmp/");
 		long taskStartTime = System.currentTimeMillis();
 		//create logger
 		Logger logger = new Logger(jobID);
@@ -72,7 +73,7 @@ public class MapTask implements ConstantNumOutputsTask {
         try {
 	        for(int i = 0; i < nReducers; i++) {
 	        	// create temp files and output streams
-	        	tempFiles[i] = File.createTempFile("reduce_" + Integer.toString(i) , ".tmp");
+	        	tempFiles[i] = File.createTempFile("reduce_" + Integer.toString(i) , ".tmp", CIEL_TEMP_DIR);
 				tempDos[i] = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(tempFiles[i])));
 				
 				// get references for output files and convert to OutputStream

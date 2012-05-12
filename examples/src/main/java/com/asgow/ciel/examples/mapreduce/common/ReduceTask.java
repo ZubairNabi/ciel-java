@@ -40,6 +40,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
+		File CIEL_TEMP_DIR = new File("/mnt/ciel_data/tmp/");
 		long taskStartTime = System.currentTimeMillis();
 		//create logger
 		Logger logger = new Logger(jobID);
@@ -60,7 +61,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 		logger.LogEventTimestamp("Reduce " + Integer.toString(id) + " input fetch completed", taskStartTime);
 		
 		// create temporary file for storing results of merge 
-        File tempFile = File.createTempFile("reduce_" + Integer.toString(nInputs) , ".tmp");
+        File tempFile = File.createTempFile("reduce_" + Integer.toString(nInputs) , ".tmp", CIEL_TEMP_DIR);
         OutputStream[] tempOutput = new OutputStream[1];
         tempOutput[0] = new FileOutputStream(tempFile);
         
