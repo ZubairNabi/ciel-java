@@ -41,7 +41,7 @@ public class WordCount implements FirstClassJavaTask {
         Logger logger = new Logger(jobID);
         
         Ciel.log("MapReduce: WordCount job started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-        logger.LogEvent("WordCount job started");
+        logger.LogEvent("WordCount job", Logger.STARTED, 0);
         
         // create MapReduce object
         MapReduce mapReduce = new MapReduce(jobID);
@@ -67,7 +67,7 @@ public class WordCount implements FirstClassJavaTask {
 		Ciel.blockOn(reduceResults);
 		Ciel.log("MapReduce: WordCount completed! in "
 				 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at "+ dateTime.getCurrentDateTime() + " for job: " + jobID);
-		logger.LogEventTimestamp("WordCount completed!", startTime);
+		logger.LogEvent("WordCount job", Logger.FINISHED, startTime);
 		Ciel.returnPlainString("MapReduce: WordCount completed! in "
 		 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at "+ dateTime.getCurrentDateTime() + " for job: " + jobID);
 		

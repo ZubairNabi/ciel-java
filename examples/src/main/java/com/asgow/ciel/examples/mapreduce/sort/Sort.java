@@ -39,7 +39,7 @@ public class Sort implements FirstClassJavaTask {
         //Get logger object
         Logger logger = new Logger(jobID);
         Ciel.log("MapReduce: Sort job started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-        logger.LogEvent("Sort job started");
+        logger.LogEvent("Sort job", Logger.STARTED, 0);
         // create MapReduce object
         MapReduce mapReduce = new MapReduce(jobID);
     	
@@ -64,7 +64,7 @@ public class Sort implements FirstClassJavaTask {
 		Ciel.blockOn(reduceResults);
 		Ciel.log("MapReduce: Sort completed! in "
 				 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-		logger.LogEventTimestamp("Sort completed!", startTime);
+		logger.LogEvent("Sort job", Logger.FINISHED, startTime);
 		Ciel.returnPlainString("MapReduce: Sort completed! in "
 		 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 		

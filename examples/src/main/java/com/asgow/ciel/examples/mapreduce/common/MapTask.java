@@ -46,20 +46,21 @@ public class MapTask implements ConstantNumOutputsTask {
 	public void invoke() throws Exception {
 		File CIEL_TEMP_DIR = new File("/mnt/ciel_data/tmp/");
 		long taskStartTime = System.currentTimeMillis();
+		String taskID = "Map " + Integer.toString(id);
 		//create logger
 		Logger logger = new Logger(jobID);
-		Ciel.log("MapReduce: Map " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-		logger.LogEvent("Map " + Integer.toString(id) + " started");
+		Ciel.log(taskID + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
+		logger.LogEvent(taskID, Logger.STARTED, 0);
         
         //create input reference
         Reference indexFileRef = Reference.fromJson(new JsonParser().parse(input).getAsJsonObject());
-        logger.LogEvent("Map " + Integer.toString(id) + " assigned input reference: " 
-        + (new JsonParser().parse(input).getAsJsonObject().get("__ref__").toString()));
+        logger.LogEvent(taskID, Logger.ASSIGNED_INPUT 
+        + new JsonParser().parse(input).getAsJsonObject().get("__ref__").toString(), 0);
         
         // create a BufferedReader from input stream
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(indexFileRef)));
         
-        logger.LogEventTimestamp("Map " + Integer.toString(id) + " input fetch completed", taskStartTime);
+        logger.LogEvent(taskID, Logger.FETCHED_INPUT, taskStartTime);
      
         // number of output files would be equal to number of reducers, so creating that many outputstreams and references
         WritableReference[] writableReferences = new WritableReference[nReducers];
@@ -85,7 +86,7 @@ public class MapTask implements ConstantNumOutputsTask {
 	        long logicStartTime = System.currentTimeMillis();
 	        // call map logic
 	        run(bufferedReader, tempDos, nReducers);
-	        logger.LogEventTimestamp("Map " + Integer.toString(id) + " logic completed", logicStartTime);
+	        logger.LogEvent(taskID, Logger.LOGIC_FINISHED, logicStartTime);
 	       
 	        long sortStartTime = System.currentTimeMillis();
 			// now sort the temp files with 50 Mb mem limit
@@ -94,17 +95,17 @@ public class MapTask implements ConstantNumOutputsTask {
 				tempIs[i] = new FileInputStream(tempFiles[i]);
 				new SWTeraBucketer().invoke(tempIs[i], outputs[i], 1);
 			}
-			logger.LogEvent("Map " + Integer.toString(id) + " total size of map output files: " + Long.toString(ssize));
-	        logger.LogEventTimestamp("Map " + Integer.toString(id) + " sort completed", sortStartTime);
+			logger.LogEvent(taskID, Logger.OUTPUT_SIZE + Long.toString(ssize), 0);
+	        logger.LogEvent(taskID, Logger.SORT_FINISHED, sortStartTime);
 			
         } catch (Exception e) {
-             logger.LogEvent("Exception while running Map " + Integer.toString(id));
+             logger.LogEvent(taskID, Logger.EXCEPTION, 0);
         	 e.printStackTrace();
         } finally {
     		// close output streams and delete temp files
         	for(int i = 0; i < nReducers; i++) {
-        		logger.LogEvent("Map " + Integer.toString(id) + " produced output reference: " 
-		                + writableReferences[i].getFilename());
+        		logger.LogEvent(taskID, Logger.PRODUCED_OUTPUT 
+		                + writableReferences[i].getFilename(), 0);
 		        tempDos[i].flush();
 		        tempFiles[i].delete();
 		        Utils.closeOutputStream(tempDos[i]);
@@ -118,7 +119,7 @@ public class MapTask implements ConstantNumOutputsTask {
         
         Ciel.log("MapReduce: Map " + Integer.toString(id) + " finished in "
        		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-        logger.LogEventTimestamp("Map " + Integer.toString(id) + " finished", taskStartTime);
+        logger.LogEvent(taskID, Logger.FINISHED, taskStartTime);
 	}
 
 	public void setup() {

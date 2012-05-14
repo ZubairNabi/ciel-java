@@ -31,7 +31,7 @@ public class SortLocal implements FirstClassJavaTask {
         //Get logger object
         Logger logger = new Logger(jobID);
         Ciel.log("MapReduce: Sort job started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-        logger.LogEvent("Sort job started");
+        logger.LogEvent("Sort job", Logger.STARTED, 0);
         // create MapReduce object
         MapReduce mapReduce = new MapReduce(jobID);
     	

@@ -42,10 +42,11 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	public void invoke() throws Exception {
 		File CIEL_TEMP_DIR = new File("/mnt/ciel_data/tmp/");
 		long taskStartTime = System.currentTimeMillis();
+		String taskID = "Reduce " + Integer.toString(id);
 		//create logger
 		Logger logger = new Logger(jobID);
 		Ciel.log("MapReduce: Reduce " + Integer.toString(id) + " started at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
-        logger.LogEvent("Reduce " + Integer.toString(id) + " started");
+        logger.LogEvent(taskID, Logger.STARTED, 0);
         
         // create input references
         int nInputs = input.length;
@@ -53,12 +54,12 @@ public class ReduceTask implements ConstantNumOutputsTask {
         InputStream[] inputs = new InputStream[nInputs];
 		for(int i = 0; i < nInputs; i++) {
 			inputs[i] = Ciel.RPC.getStreamForReference(this.input[i]);
-			logger.LogEvent("Reduce " + Integer.toString(id) + " assigned input reference: " 
-			        + this.input[i].toJson().get("__ref__").toString());
+			logger.LogEvent(taskID, Logger.ASSIGNED_INPUT
+			        + this.input[i].toJson().get("__ref__").toString(), 0);
 			inputs[i] = Ciel.RPC.getStreamForReference(this.input[i]);					 
 		}
 		
-		logger.LogEventTimestamp("Reduce " + Integer.toString(id) + " input fetch completed", taskStartTime);
+		logger.LogEvent(taskID, Logger.FETCHED_INPUT, taskStartTime);
 		
 		// create temporary file for storing results of merge 
         File tempFile = File.createTempFile("reduce_" + Integer.toString(nInputs) , ".tmp", CIEL_TEMP_DIR);
@@ -72,9 +73,9 @@ public class ReduceTask implements ConstantNumOutputsTask {
         SWTeraMerger merger = new SWTeraMerger();
         merger.merge(inputs, tempOutput, nInputs);
         try {
-        	logger.LogEvent("Reduce " + Integer.toString(id) + " merged file size: " 
-	        		+ Long.toString(tempFile.length()));
-        	logger.LogEventTimestamp("Reduce " + Integer.toString(id) + " merge completed", mergeStartTime);
+        	logger.LogEvent(taskID, Logger.MERGE_SIZE 
+	        		+ Long.toString(tempFile.length()), 0);
+        	logger.LogEvent(taskID, Logger.MERGE_FINISHED, mergeStartTime);
 	       
 	        // create output file reference and get outputstream	
 	        WritableReference writableReference = Ciel.RPC.getOutputFilename(0);
@@ -86,9 +87,9 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	        long logicStartTime = System.currentTimeMillis();
 	        //run reduce logic
 	        run(dos, dis);
-	        logger.LogEventTimestamp("Reduce " + Integer.toString(id) + " logic completed", logicStartTime);
+	        logger.LogEvent(taskID, Logger.LOGIC_FINISHED, logicStartTime);
         } catch (Exception e) {
-        	logger.LogEvent("Exception while running Reduce " + Integer.toString(id));
+        	logger.LogEvent(taskID, Logger.EXCEPTION, 0);
        	 	e.printStackTrace();
        } finally {
        		// close input streams
@@ -106,7 +107,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
         
         Ciel.log("MapReduce: Reduce " + Integer.toString(id) + " finished in "
        		 + Double.toString((System.currentTimeMillis() - taskStartTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);	
-        logger.LogEventTimestamp("Reduce " + Integer.toString(id) + " finished", taskStartTime);
+        logger.LogEvent(taskID,Logger.FINISHED, taskStartTime);
 	}
 
 	public void setup() {
