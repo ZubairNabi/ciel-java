@@ -142,4 +142,30 @@ public class MapReduce {
 		}
 		return filePaths;
 	}
+	
+	public void run(String indexFile, int nInputs,
+			int indexFileSize, String hostnames[], short ports[], int nReplicas, int nReduces,
+			String mapTask, String reduceTask) throws Exception {
+	     // get input jsonelement strings for references
+        String[] mapInputs = getReferencesFromInputFile(indexFile,
+        		nInputs, indexFileSize, hostnames, ports, nReplicas);
+        
+        // check that getReferencesFromInputFile did not return a null
+        if(mapInputs == null) {
+    		Ciel.returnPlainString("MapReduce: Error! NUM_OF_INPUTS exceeded number of references in reference index" + " for job: " + jobID);
+    		System.exit(1);
+        }
+        
+        // create maps
+        Reference[][] mapResults = map(mapTask, mapInputs, nInputs, nReduces);
+        
+		// now shuffle map outputs so that each reduce task receives an input file from each map
+		Reference[][] reduceInput = shuffle(mapResults, nInputs, nReduces);
+		
+		// create reduces
+		Reference[] reduceResults = reduce(reduceTask, reduceInput, nReduces);
+		
+		// wait for reduce outputs
+		Ciel.blockOn(reduceResults);
+	}
 }

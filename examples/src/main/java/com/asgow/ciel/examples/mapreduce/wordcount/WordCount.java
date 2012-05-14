@@ -45,26 +45,11 @@ public class WordCount implements FirstClassJavaTask {
         
         // create MapReduce object
         MapReduce mapReduce = new MapReduce(jobID);
-    	
-        // get input jsonelement strings for references
-        String[] mapInputs = mapReduce.getReferencesFromInputFile(indexFile,
-        		numInputs, indexFileSize, hostnames, ports, numReplicas);
+        // run MapReduce
+        mapReduce.run(indexFile, numInputs, indexFileSize, hostnames, ports, numReplicas, numReduces,
+        		"com.asgow.ciel.examples.mapreduce.wordcount.WordCountMap",
+        		"com.asgow.ciel.examples.mapreduce.wordcount.WordCountReduce");
         
-        // check that getReferencesFromInputFile did not return a null
-        if(mapInputs == null) {
-    		Ciel.returnPlainString("MapReduce: Error! NUM_OF_INPUTS exceeded number of references in reference index" + " for job: " + jobID);
-    		System.exit(1);
-        }
-        
-        // create maps
-        Reference[][] mapResults = mapReduce.map("com.asgow.ciel.examples.mapreduce.wordcount.WordCountMap", mapInputs, numInputs, numReduces);
-        
-		// now shuffle map outputs so that each reduce task receives an input file from each map
-		Reference[][] reduceInput = mapReduce.shuffle(mapResults, numInputs, numReduces);
-		
-		Reference[] reduceResults = mapReduce.reduce("com.asgow.ciel.examples.mapreduce.wordcount.WordCountReduce", reduceInput, numReduces);
-		
-		Ciel.blockOn(reduceResults);
 		Ciel.log("MapReduce: WordCount completed! in "
 				 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at "+ dateTime.getCurrentDateTime() + " for job: " + jobID);
 		logger.LogEvent("WordCount job", Logger.FINISHED, startTime);
