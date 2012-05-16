@@ -58,7 +58,8 @@ public class MapTask implements ConstantNumOutputsTask {
         + new JsonParser().parse(input).getAsJsonObject().get("__ref__").toString(), 0);
         
         // create a BufferedReader from input stream
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(indexFileRef)));
+        BufferedReader bufferedReader 
+        = new BufferedReader(new InputStreamReader(Ciel.RPC.getStreamForReference(indexFileRef, 1024*1024*64, false, false, true)));
         
         logger.LogEvent(taskID, Logger.FETCHED_INPUT, taskStartTime);
      
