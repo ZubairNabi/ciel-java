@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.InetAddress;
 
 import com.asgow.ciel.examples.mapreduce.common.DateTime;
 import com.asgow.ciel.examples.mapreduce.common.Utils;
@@ -44,7 +45,8 @@ public class MapTaskLocal implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-		File CIEL_TEMP_DIR = new File("/mnt/ciel_data/tmp/");
+		String hostname = InetAddress.getLocalHost().getHostName();
+		File CIEL_TEMP_DIR = new File("/mnt/ssd/" + hostname + "/ciel_data/tmp/");
 		long taskStartTime = System.currentTimeMillis();
 		String taskID = "Map " + Integer.toString(id);
 		//create logger
