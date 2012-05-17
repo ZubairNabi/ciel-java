@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 
 import com.asgow.ciel.examples.mapreduce.terasort.SWTeraMerger;
 
@@ -40,7 +41,9 @@ public class ReduceTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-		File CIEL_TEMP_DIR = new File("/mnt/ciel_data/tmp/");
+		String hostname = InetAddress.getLocalHost().getHostName();
+		File CIEL_TEMP_DIR = new File("/mnt/ssd/" + hostname + "/ciel_data/tmp/");
+		//File CIEL_TEMP_DIR = new File("/mnt/ciel_data/tmp/");
 		long taskStartTime = System.currentTimeMillis();
 		String taskID = "Reduce " + Integer.toString(id);
 		//create logger
