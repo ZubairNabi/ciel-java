@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class DateTime implements Serializable {
 	
@@ -17,6 +18,7 @@ public class DateTime implements Serializable {
 	public DateTime () {
 		date = new Date();
 		dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/London")); 
 	}
 	
 	public String getCurrentDateTime() {
