@@ -44,7 +44,7 @@ public class MapTask implements ConstantNumOutputsTask {
 	}
 
 	public void invoke() throws Exception {
-		File CIEL_TEMP_DIR = new File("/mnt/ciel_data/tmp/");
+		File CIEL_TEMP_DIR = new File("/tmp/");
 		long taskStartTime = System.currentTimeMillis();
 		String taskID = "Map " + Integer.toString(id);
 		//create logger
