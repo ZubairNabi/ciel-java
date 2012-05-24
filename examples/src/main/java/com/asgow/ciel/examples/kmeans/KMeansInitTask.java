@@ -58,7 +58,7 @@ public class KMeansInitTask implements FirstClassJavaTask {
 		Ciel.blockOn(partialSumsRefs);
 		logger.LogEvent(taskID, "first wave of maps completed", 0);
 		
-		Reference finalOutput = Ciel.spawn((ConstantNumOutputsTask)new KMeansReducer(partialSumsRefs, initClusters, k, numDimensions, epsilon, dataPartitions, 0, doCache, jobID, 0))[0];
+		Reference finalOutput = Ciel.spawn(new KMeansReducer(partialSumsRefs, initClusters, k, numDimensions, epsilon, dataPartitions, 0, doCache, jobID, 0), null, 1)[0];
 		Ciel.blockOn(finalOutput);
 		logger.LogEvent("kmeans initTask", Logger.FINISHED, startTime);
 		Ciel.returnPlainString("kmeans initTask completed! in "
