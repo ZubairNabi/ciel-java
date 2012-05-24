@@ -33,6 +33,7 @@ public class KMeansInitTask implements FirstClassJavaTask {
 		Logger logger = new Logger(jobID);
 		logger.LogEvent(taskID, Logger.STARTED, 0);
 		
+		long dataGeneratorStartTime = System.currentTimeMillis();		
 		//Reference randomData = Ciel.spawn(new KMeansDataGenerator(numVectors, numDimensions), null, 1)[0];
 		Reference[] dataPartitions = Ciel.getRefsFromPackage("kmeans-vectors");
 		if (dataPartitions == null) {
@@ -40,27 +41,27 @@ public class KMeansInitTask implements FirstClassJavaTask {
 			for (int i = 0; i < numPartitions; ++i) {
 				dataPartitions[i] = Ciel.spawn(new KMeansDataGenerator(numVectors / numPartitions, numDimensions, i, jobID, i), null, 1)[0];
 			}
-		}
-		
+		}		
 		Ciel.blockOn(dataPartitions);
-		logger.LogEvent(taskID, "data generated", 0);
-
-		Reference initClusters = Ciel.spawn(new KMeansHead(dataPartitions[0], k, numDimensions, jobID, 0), null, 1)[0];
+		logger.LogEvent(taskID, "data generated", dataGeneratorStartTime);
 		
-		Ciel.blockOn(dataPartitions);
-		logger.LogEvent(taskID, "initClusters obtained", 0);
+		long initClustersStartTime = System.currentTimeMillis();
+		Reference initClusters = Ciel.spawn(new KMeansHead(dataPartitions[0], k, numDimensions, jobID, 0), null, 1)[0];	
+		Ciel.blockOn(initClusters);
+		logger.LogEvent(taskID, "initClusters obtained", initClustersStartTime);
 		
+		long partialSumsStartTime = System.currentTimeMillis();
 		Reference[] partialSumsRefs = new Reference[numPartitions];
 		for (int i = 0; i < numPartitions; ++i) {
 			partialSumsRefs[i] = Ciel.spawn(new KMeansMapper(dataPartitions[i], initClusters, k, numDimensions, doCache, jobID, i), null, 1)[0];
-		}
-		
+		}		
 		Ciel.blockOn(partialSumsRefs);
-		logger.LogEvent(taskID, "first wave of maps completed", 0);
+		logger.LogEvent(taskID, "first wave of maps completed", partialSumsStartTime);
 		
 		Reference finalOutput = Ciel.spawn(new KMeansReducer(partialSumsRefs, initClusters, k, numDimensions, epsilon, dataPartitions, 0, doCache, jobID, 0), null, 1)[0];
 		Ciel.blockOn(finalOutput);
-		logger.LogEvent("kmeans initTask", Logger.FINISHED, startTime);
+		
+		logger.LogEvent("kmeans initTask", Logger.FINISHED, initClustersStartTime);
 		Ciel.returnPlainString("kmeans initTask completed! in "
 				 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 	}
