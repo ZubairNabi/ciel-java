@@ -39,7 +39,7 @@ public class KMeansInitTask implements FirstClassJavaTask {
 		if (dataPartitions == null) {
 			dataPartitions = new Reference[numPartitions];
 			for (int i = 0; i < numPartitions; ++i) {
-				dataPartitions[i] = Ciel.spawn(new KMeansDataGenerator(numVectors / numPartitions, numDimensions, i, jobID, i), null, 1)[0];
+				dataPartitions[i] = Ciel.spawn(new KMeansDataGenerator(numVectors, numDimensions, i, jobID, i), null, 1)[0];
 			}
 		}		
 		Ciel.blockOn(dataPartitions);
