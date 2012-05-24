@@ -1,8 +1,10 @@
 package com.asgow.ciel.examples.kmeans;
 
+import com.asgow.ciel.examples.mapreduce.common.DateTime;
 import com.asgow.ciel.examples.mapreduce.common.Logger;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
+import com.asgow.ciel.tasks.ConstantNumOutputsTask;
 import com.asgow.ciel.tasks.FirstClassJavaTask;
 
 public class KMeansInitTask implements FirstClassJavaTask {
@@ -14,7 +16,8 @@ public class KMeansInitTask implements FirstClassJavaTask {
 
 	@Override
 	public void invoke() throws Exception {
-
+		long startTime = System.currentTimeMillis();
+		DateTime dateTime = new DateTime();
 		int numVectors = Integer.parseInt(Ciel.args[0]);
 		int numDimensions = Integer.parseInt(Ciel.args[1]);
 		int k = Integer.parseInt(Ciel.args[2]);
@@ -26,8 +29,9 @@ public class KMeansInitTask implements FirstClassJavaTask {
         	jobID = Ciel.args[6];
         }
 		
+		String taskID = "kmeans initTask";
 		Logger logger = new Logger(jobID);
-		logger.LogEvent("kmeans initTask", Logger.STARTED, 0);
+		logger.LogEvent(taskID, Logger.STARTED, 0);
 		
 		//Reference randomData = Ciel.spawn(new KMeansDataGenerator(numVectors, numDimensions), null, 1)[0];
 		Reference[] dataPartitions = Ciel.getRefsFromPackage("kmeans-vectors");
@@ -37,16 +41,28 @@ public class KMeansInitTask implements FirstClassJavaTask {
 				dataPartitions[i] = Ciel.spawn(new KMeansDataGenerator(numVectors / numPartitions, numDimensions, i, jobID, i), null, 1)[0];
 			}
 		}
+		
+		Ciel.blockOn(dataPartitions);
+		logger.LogEvent(taskID, "data generated", 0);
 
 		Reference initClusters = Ciel.spawn(new KMeansHead(dataPartitions[0], k, numDimensions, jobID, 0), null, 1)[0];
+		
+		Ciel.blockOn(dataPartitions);
+		logger.LogEvent(taskID, "initClusters obtained", 0);
 		
 		Reference[] partialSumsRefs = new Reference[numPartitions];
 		for (int i = 0; i < numPartitions; ++i) {
 			partialSumsRefs[i] = Ciel.spawn(new KMeansMapper(dataPartitions[i], initClusters, k, numDimensions, doCache, jobID, i), null, 1)[0];
 		}
 		
-		Ciel.tailSpawn(new KMeansReducer(partialSumsRefs, initClusters, k, numDimensions, epsilon, dataPartitions, 0, doCache, jobID, 0), null);
+		Ciel.blockOn(partialSumsRefs);
+		logger.LogEvent(taskID, "first wave of maps completed", 0);
 		
+		Reference finalOutput = Ciel.spawn((ConstantNumOutputsTask)new KMeansReducer(partialSumsRefs, initClusters, k, numDimensions, epsilon, dataPartitions, 0, doCache, jobID, 0))[0];
+		Ciel.blockOn(finalOutput);
+		logger.LogEvent("kmeans initTask", Logger.FINISHED, startTime);
+		Ciel.returnPlainString("kmeans initTask completed! in "
+				 + Double.toString((System.currentTimeMillis() - startTime)/1000.0) + " secs at " + dateTime.getCurrentDateTime() + " for job: " + jobID);
 	}
 
 	@Override

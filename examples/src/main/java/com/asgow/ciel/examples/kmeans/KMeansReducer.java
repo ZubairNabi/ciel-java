@@ -109,8 +109,8 @@ public class KMeansReducer implements FirstClassJavaTask {
 			
 		} else {
 			logger.LogEvent(taskID,Logger.FINISHED, taskStartTime);
-			Ciel.returnPlainString("Finished!");
-			//Ciel.returnObject(result.sums);
+			//Ciel.returnPlainString("Finished!");
+			Ciel.returnObject(result.sums);
 		}
 		
 	}
