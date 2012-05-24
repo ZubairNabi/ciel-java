@@ -102,10 +102,10 @@ public class KMeansReducer implements FirstClassJavaTask {
 			Reference[] newPartialSumsRefs = new Reference[this.dataPartitionsRefs.length];
 			
 			for (int i = 0; i < newPartialSumsRefs.length; ++i) {
-				newPartialSumsRefs[i] = Ciel.spawn(new KMeansMapper(this.dataPartitionsRefs[i], newClustersRef, this.k, this.numDimensions, this.doCache, jobID, this.iteration + 1), null, 1)[0];
+				newPartialSumsRefs[i] = Ciel.spawn(new KMeansMapper(this.dataPartitionsRefs[i], newClustersRef, this.k, this.numDimensions, this.doCache, jobID, this.iteration + 1 + id + i), null, 1)[0];
 			}
 
-			Ciel.tailSpawn(new KMeansReducer(newPartialSumsRefs, newClustersRef, this.k, this.numDimensions, this.epsilon, this.dataPartitionsRefs, this.iteration + 1, this.doCache, jobID, this.iteration + 1), null);
+			Ciel.tailSpawn(new KMeansReducer(newPartialSumsRefs, newClustersRef, this.k, this.numDimensions, this.epsilon, this.dataPartitionsRefs, this.iteration + 1, this.doCache, jobID, this.iteration + 1 + id), null);
 			
 		} else {
 			logger.LogEvent(taskID,Logger.FINISHED, taskStartTime);

@@ -38,7 +38,7 @@ public class KMeansInitTask implements FirstClassJavaTask {
 			}
 		}
 
-		Reference initClusters = Ciel.spawn(new KMeansHead(dataPartitions[0], k, numDimensions), null, 1)[0];
+		Reference initClusters = Ciel.spawn(new KMeansHead(dataPartitions[0], k, numDimensions, jobID, 0), null, 1)[0];
 		
 		Reference[] partialSumsRefs = new Reference[numPartitions];
 		for (int i = 0; i < numPartitions; ++i) {
