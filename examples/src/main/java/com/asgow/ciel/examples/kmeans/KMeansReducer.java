@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
+import com.asgow.ciel.examples.mapreduce.common.Logger;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.references.WritableReference;
@@ -23,8 +24,11 @@ public class KMeansReducer implements FirstClassJavaTask {
 	private final Reference[] dataPartitionsRefs;
 	private final int iteration;
 	private final boolean doCache;
+	private String jobID;
+	private int id;
 	
-	public KMeansReducer(Reference[] partialSumsRefs, Reference oldClustersRef, int k, int numDimensions, double epsilon, Reference[] dataPartitionsRefs, int iteration, boolean doCache) {
+	public KMeansReducer(Reference[] partialSumsRefs, Reference oldClustersRef, int k, int numDimensions, double epsilon, Reference[] dataPartitionsRefs, int iteration, boolean doCache,
+			String jobID, int id) {
 		this.partialSumsRefs = partialSumsRefs;
 		this.oldClustersRef = oldClustersRef;
 		this.k = k;
@@ -33,6 +37,8 @@ public class KMeansReducer implements FirstClassJavaTask {
 		this.dataPartitionsRefs = dataPartitionsRefs;
 		this.iteration = iteration;
 		this.doCache = doCache;
+		this.jobID = jobID;
+		this.id = id;
 	}
 	
 	@Override
@@ -47,6 +53,11 @@ public class KMeansReducer implements FirstClassJavaTask {
 
 	@Override
 	public void invoke() throws Exception {
+		long taskStartTime = System.currentTimeMillis();
+		String taskID = "kmeansReducer " + Integer.toString(id);
+		//create logger
+		Logger logger = new Logger(jobID);
+        logger.LogEvent(taskID, Logger.STARTED, 0);
 		KMeansMapperResult result = new KMeansMapperResult(this.k, this.numDimensions);
 		
 		for (Reference pSumRef : this.partialSumsRefs) {
@@ -66,6 +77,8 @@ public class KMeansReducer implements FirstClassJavaTask {
 			}
 		}
 		oldClustersIn.close();
+		
+		logger.LogEvent(taskID, Logger.FETCHED_INPUT, taskStartTime);
 		
 		double error = result.error(oldClusters);
 		
@@ -89,13 +102,13 @@ public class KMeansReducer implements FirstClassJavaTask {
 			Reference[] newPartialSumsRefs = new Reference[this.dataPartitionsRefs.length];
 			
 			for (int i = 0; i < newPartialSumsRefs.length; ++i) {
-				newPartialSumsRefs[i] = Ciel.spawn(new KMeansMapper(this.dataPartitionsRefs[i], newClustersRef, this.k, this.numDimensions, this.doCache), null, 1)[0];
+				newPartialSumsRefs[i] = Ciel.spawn(new KMeansMapper(this.dataPartitionsRefs[i], newClustersRef, this.k, this.numDimensions, this.doCache, jobID, this.iteration + 1), null, 1)[0];
 			}
 
-			Ciel.tailSpawn(new KMeansReducer(newPartialSumsRefs, newClustersRef, this.k, this.numDimensions, this.epsilon, this.dataPartitionsRefs, this.iteration + 1, this.doCache), null);
+			Ciel.tailSpawn(new KMeansReducer(newPartialSumsRefs, newClustersRef, this.k, this.numDimensions, this.epsilon, this.dataPartitionsRefs, this.iteration + 1, this.doCache, jobID, this.iteration + 1), null);
 			
 		} else {
-		
+			logger.LogEvent(taskID,Logger.FINISHED, taskStartTime);
 			Ciel.returnPlainString("Finished!");
 			//Ciel.returnObject(result.sums);
 		}

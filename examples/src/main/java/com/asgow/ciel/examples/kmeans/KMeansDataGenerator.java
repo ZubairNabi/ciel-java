@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Random;
 
+import com.asgow.ciel.examples.mapreduce.common.Logger;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.references.WritableReference;
@@ -16,11 +17,15 @@ public class KMeansDataGenerator implements FirstClassJavaTask {
 	private int numVectors;
 	private int numDimensions;
 	private int seed;
+	private String jobID;
+	private int id;
 	
-	public KMeansDataGenerator(int numVectors, int numDimensions, int seed) {
+	public KMeansDataGenerator(int numVectors, int numDimensions, int seed, String jobID, int id) {
 		this.numVectors = numVectors;
 		this.numDimensions = numDimensions;
 		this.seed = seed;
+		this.jobID = jobID;
+		this.id = id;
 	}
 	
 	@Override
@@ -30,6 +35,11 @@ public class KMeansDataGenerator implements FirstClassJavaTask {
 
 	@Override
 	public void invoke() throws Exception {
+		String taskID = "kmeansDataGenerator " + Integer.toString(id);
+		long taskStartTime = System.currentTimeMillis();
+		//create logger
+		Logger logger = new Logger(jobID);
+		logger.LogEvent(taskID, Logger.STARTED, 0);
 		double minValue = -1000000.0;
 		double maxValue = 1000000.0;
 		
@@ -44,8 +54,9 @@ public class KMeansDataGenerator implements FirstClassJavaTask {
 				dos.writeDouble((rand.nextDouble() * (maxValue - minValue)) + minValue);
 			}
 		}
-
+		logger.LogEvent(taskID, Logger.OUTPUT_SIZE + Long.toString(8 * this.numVectors * this.numDimensions), 0);
 		dos.close();
+		logger.LogEvent(taskID, Logger.FINISHED, taskStartTime);
 		//Ciel.RPC.closeOutput(0);
 	}
 
@@ -59,8 +70,10 @@ public class KMeansDataGenerator implements FirstClassJavaTask {
 			int numVectors = Integer.parseInt(args[0]);
 			int numDimensions = Integer.parseInt(args[1]);
 			int seed = Integer.parseInt(args[2]);
+			String jobID = args[3];
+			int id = Integer.parseInt(args[3]);
 			Ciel.RPC = new DummyRPC(new OutputStream[] { new FileOutputStream(args[3]) });
-			new KMeansDataGenerator(numVectors, numDimensions, seed).invoke();
+			new KMeansDataGenerator(numVectors, numDimensions, seed, jobID, id).invoke();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);

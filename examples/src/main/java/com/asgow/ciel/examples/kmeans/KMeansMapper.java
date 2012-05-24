@@ -6,9 +6,11 @@ import java.io.EOFException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.asgow.ciel.examples.mapreduce.common.Logger;
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.references.Reference;
 import com.asgow.ciel.tasks.FirstClassJavaTask;
+import com.google.gson.JsonParser;
 
 public class KMeansMapper implements FirstClassJavaTask {
 
@@ -27,13 +29,18 @@ public class KMeansMapper implements FirstClassJavaTask {
 	private final int k;
 	private final int numDimensions;
 	private final boolean doCache;
+	private String jobID;
+	private int id;
 	
-	public KMeansMapper(Reference dataPartitionRef, Reference clustersRef, int k, int numDimensions, boolean doCache) {
+	public KMeansMapper(Reference dataPartitionRef, Reference clustersRef, int k, int numDimensions, boolean doCache, 
+			String jobID, int id) {
 		this.dataPartitionRef = dataPartitionRef;
 		this.clustersRef = clustersRef;
 		this.k = k;
 		this.numDimensions = numDimensions;
 		this.doCache = doCache;
+		this.jobID = jobID;
+		this.id = id;
 	}
 	
 	@Override
@@ -43,9 +50,20 @@ public class KMeansMapper implements FirstClassJavaTask {
 
 	@Override
 	public void invoke() throws Exception {
+		long taskStartTime = System.currentTimeMillis();
+		String taskID = "kmeansMapper " + Integer.toString(id);
+		//create logger
+		Logger logger = new Logger(jobID);
+		logger.LogEvent(taskID, Logger.STARTED, 0);
+		logger.LogEvent(taskID, Logger.ASSIGNED_INPUT 
+			        + this.clustersRef.toJson().get("__ref__").toString(), 0);
 		
 		DataInputStream clustersIn = new DataInputStream(new BufferedInputStream(Ciel.RPC.getStreamForReference(this.clustersRef, 1048576, false, false, false), 1048576));
-	
+		
+		logger.LogEvent(taskID, Logger.FETCHED_INPUT, taskStartTime);
+		
+		long logicStartTime = System.currentTimeMillis();
+		
 		double[][] clusters = new double[this.k][this.numDimensions];
 		
 		for (int i = 0; i < this.k; ++i) {
@@ -141,7 +159,8 @@ public class KMeansMapper implements FirstClassJavaTask {
 		if (dataIn != null) {
 		    dataIn.close();
 		}
-		
+		logger.LogEvent(taskID, Logger.LOGIC_FINISHED, logicStartTime);
+		logger.LogEvent(taskID, Logger.FINISHED, taskStartTime);
 		Ciel.returnObject(result);
 	}
 	
