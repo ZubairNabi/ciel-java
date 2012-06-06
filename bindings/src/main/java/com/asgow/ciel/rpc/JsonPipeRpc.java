@@ -307,9 +307,13 @@ public class JsonPipeRpc implements WorkerRpc {
 			args.addProperty("bytes", bytes);
 		}
 		JsonObject response = this.sendReceiveMessage(WAIT_STREAM, args).getAsJsonArray().get(1).getAsJsonObject();
-		int size = response.get("size").getAsInt();
-		boolean done = response.get("done").getAsBoolean();
 		boolean success = response.get("success").getAsBoolean();
+		int size = 0;
+		boolean done = true;
+		if(success == true) {
+			size = response.get("size").getAsInt();
+			done = response.get("done").getAsBoolean();
+		}
 		return new WaitAsyncInputResponse(size, done, success);
 	}
 	
