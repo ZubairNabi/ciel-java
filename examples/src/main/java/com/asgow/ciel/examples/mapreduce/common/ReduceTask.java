@@ -57,7 +57,7 @@ public class ReduceTask implements ConstantNumOutputsTask {
 		DataOutputStream[] dos = new DataOutputStream[1];
         InputStream[] inputs = new InputStream[nInputs];
 		for(int i = 0; i < nInputs; i++) {
-			Ciel.blockOn(this.input[i]);
+			//Ciel.blockOn(this.input[i]);
 			inputs[i] = Ciel.RPC.getStreamForReference(this.input[i], 1024*1024*64, false, false, false);
 			//inputs[i] = new FileInputStream(Ciel.RPC.getFilenameForReference(this.input[i]));
 			logger.LogEvent(taskID, Logger.ASSIGNED_INPUT
