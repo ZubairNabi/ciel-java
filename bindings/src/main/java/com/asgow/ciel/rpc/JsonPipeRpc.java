@@ -11,6 +11,11 @@ import java.io.ObjectStreamClass;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import com.asgow.ciel.executor.Ciel;
 import com.asgow.ciel.io.CielInputStream;
@@ -247,6 +252,33 @@ public class JsonPipeRpc implements WorkerRpc {
 			args.add("soft_cache_keys", Ciel.softCache.getKeysAsJson());
 		}
 		this.sendMessage(EXIT, args);
+	}
+	
+	public String[] getConcurrentFilenamesForReferences(Reference refs[]) throws InterruptedException, ExecutionException {
+		int nRefs = refs.length;
+		String[] filenames = new String[nRefs];
+		
+		ExecutorService executor = new ScheduledThreadPoolExecutor(5);
+		for(int i = 0; i < nRefs; ++i) {
+			Callable<String> callable = new ConcurrentGetFileNameForReference(refs[i], this);
+			Future<String> future = executor.submit(callable);
+			filenames[i] = future.get();
+		}
+		return filenames;
+	}
+	
+	public static class ConcurrentGetFileNameForReference implements Callable<String> {
+		private Reference ref;
+		private JsonPipeRpc jsonPipeRpc;
+		
+		public ConcurrentGetFileNameForReference(Reference ref, JsonPipeRpc jsonPipeRpc) {
+			this.ref = ref;
+			this.jsonPipeRpc = jsonPipeRpc;
+		}
+		
+		public String call() {
+			return jsonPipeRpc.getFilenameForReference(ref);
+		}
 	}
 
 	public String getFilenameForReference(Reference ref) {
