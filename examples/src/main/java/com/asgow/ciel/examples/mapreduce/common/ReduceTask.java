@@ -42,8 +42,8 @@ public class ReduceTask implements ConstantNumOutputsTask {
 
 	public void invoke() throws Exception {
 		String hostname = InetAddress.getLocalHost().getHostName();
-		//File CIEL_TEMP_DIR = new File("/tmp/");
-		File CIEL_TEMP_DIR = new File("/mnt/ssd/" + hostname + "/ciel_data/tmp/");
+		File CIEL_TEMP_DIR = new File("/tmp/");
+		//File CIEL_TEMP_DIR = new File("/mnt/ssd/" + hostname + "/ciel_data/tmp/");
 		//File CIEL_TEMP_DIR = new File("/mnt/ciel_data/tmp/");
 		long taskStartTime = System.currentTimeMillis();
 		String taskID = "Reduce " + Integer.toString(id);
